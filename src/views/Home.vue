@@ -35,24 +35,23 @@ export default defineComponent({
     const gameKey = ref("");
     const playerName = ref("");
     const router = useRouter();
-
+    const test = useGameConnection;
     const startGame = async () => {
-      if (!useGameConnection.connection.value) {
-        await useGameConnection.connect();
-      }
       const gameUUID = uuidv4();
       await useGameConnection.startGame(gameUUID);
-      console.log(gameUUID);
       await joinGame(useGameConnection.getGameKey().value, playerName.value);
-      router.push("/game");
+      router.push({
+        name: "Game",
+        params: { gameKey: gameUUID, playerName: playerName.value },
+      });
     };
 
     const joinGame = async (gameKey: string, nick: string) => {
-      if (!useGameConnection.connection.value) {
-        await useGameConnection.connect();
-      }
       await useGameConnection.joinGame(gameKey, nick);
-      router.push("/game");
+      router.push({
+        name: "Game",
+        params: { gameKey: gameKey, playerName: playerName.value },
+      });
     };
 
     const uuidv4 = () => {
@@ -68,6 +67,7 @@ export default defineComponent({
       playerName,
       startGame,
       joinGame,
+      test,
     };
   },
 });

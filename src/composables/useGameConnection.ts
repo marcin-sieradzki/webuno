@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { HubConnectionBuilder, LogLevel } from "@aspnet/signalr";
 
 interface Card {
@@ -16,6 +16,7 @@ const buildConnection = () => {
 
   connection.value = newConnection;
 };
+const isConnected = computed(() => (connection.value ? true : false));
 
 const connect = async () => {
   buildConnection();
@@ -28,6 +29,10 @@ const disconnect = async () => {
 
 const startGame = async (gameKey: string) => {
   try {
+    if (!isConnected.value) {
+      buildConnection();
+      await connect();
+    }
     await connection.value.invoke("StartGame", gameKey);
     internalGameKey.value = gameKey;
   } catch (e) {
@@ -37,6 +42,10 @@ const startGame = async (gameKey: string) => {
 
 const joinGame = async (gameKey: string, playerName: string) => {
   try {
+    if (!isConnected.value) {
+      buildConnection();
+      await connect();
+    }
     await connection.value.invoke("JoinGame", gameKey, playerName);
     internalGameKey.value = gameKey;
     internalPlayerName.value = playerName;

@@ -5,10 +5,13 @@
         <Table> </Table>
       </template>
       <template v-slot:sidebar>
-        <div class="flex flex-col">
-          <span v-for="(message, i) in chatMessages" :key="i" class="mb-3">{{
-            message
-          }}</span>
+        <div class="flex flex-col p-3">
+          <ChatMessage
+            v-for="(message, i) in chatMessages"
+            :key="i"
+            :message="message.message"
+            :playerName="message.playerName"
+          ></ChatMessage>
           <InputText type="text" v-model="chatMessage" />
           <Button label="send" @click="sendMessage" />
         </div>
@@ -22,30 +25,43 @@ import { defineComponent, onMounted, ref } from "vue";
 
 import Board from "@/components/Board.vue";
 import Table from "@/components/Table.vue";
+import ChatMessage from "@/components/ChatMessage.vue";
 
 import useGameConnection from "@/composables/useGameConnection";
-import useChat from "@/composables/useChat";
+import { useChat } from "@/composables/useChat";
+import { useRoute } from "vue-router";
 
+interface Message {
+  message: string;
+  playerName: string;
+  gameKey: string;
+}
 export default defineComponent({
   name: "Game",
-  components: { Board, Table },
+  components: { Board, Table, ChatMessage },
   setup() {
-    const chatMessages = ref([]);
+    const chatMessages = ref<Message[]>([]);
     const chatMessage = ref("");
+    const route = useRoute();
+    const chat = useChat();
 
     const sendMessage = () => {
-      useChat.sendMessage(chatMessage);
+      chat.sendMessage(chatMessage.value);
     };
 
     onMounted(async () => {
-      if (!useGameConnection.connection.value) {
-        await useGameConnection.connect();
+      if (!useGameConnection.getGameKey().value.length) {
+        await useGameConnection.joinGame(
+          route.params.gameKey.toString(),
+          route.params.playerName.toString()
+        );
       }
+
       useGameConnection.registerListener("PlayerJoined", (data) => {
         console.log(data);
       });
-      useGameConnection.registerListener("MessageReceived", (data) => {
-        console.log(data);
+
+      useGameConnection.registerListener("MessageReceived", (data: Message) => {
         chatMessages.value = [...chatMessages.value, data];
       });
     });
