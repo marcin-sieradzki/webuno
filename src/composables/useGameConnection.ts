@@ -1,5 +1,7 @@
 import { ref, computed } from "vue";
-import { HubConnectionBuilder, LogLevel } from "@aspnet/signalr";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import axios from "axios";
+import { Game, Player } from "@/Types";
 
 interface Card {
   id: string;
@@ -7,9 +9,11 @@ interface Card {
 const connection = ref(null);
 const internalGameKey = ref("");
 const internalPlayerName = ref("");
-
+const player = ref<Player>(null);
+const game = ref<Game>(null);
 const buildConnection = () => {
   const newConnection = new HubConnectionBuilder()
+    // .withUrl("https://webuno-api.azurewebsites.net/gamehub")
     .withUrl("https://localhost:44384/gamehub")
     .configureLogging(LogLevel.Information)
     .build();
@@ -27,14 +31,18 @@ const disconnect = async () => {
   await connection.value.stop();
 };
 
-const startGame = async (gameKey: string) => {
+const startGame = async (playerName: string) => {
   try {
     if (!isConnected.value) {
       buildConnection();
       await connect();
     }
-    await connection.value.invoke("StartGame", gameKey);
-    internalGameKey.value = gameKey;
+
+    const newGame: Game = await connection.value.invoke(
+      "StartGame",
+      playerName
+    );
+    game.value = newGame;
   } catch (e) {
     throw new Error(e);
   }
@@ -47,8 +55,8 @@ const joinGame = async (gameKey: string, playerName: string) => {
       await connect();
     }
     await connection.value.invoke("JoinGame", gameKey, playerName);
-    internalGameKey.value = gameKey;
-    internalPlayerName.value = playerName;
+    game.value.key = gameKey;
+    player.value.name = playerName;
   } catch (e) {
     throw new Error(e);
   }
@@ -64,11 +72,24 @@ const registerListener = (eventName: string, callback: Function) => {
   });
 };
 
+const test = async () => {
+  await axios
+    .post(
+      `https://localhost:44384/api/game/${getPlayerName().value}/${
+        connection.value.connection.connectionId
+      }`
+    )
+    .then((data) => {
+      console.log(data);
+      return data;
+    });
+};
+
 const getGameKey = () => {
-  return internalGameKey;
+  return game.value.key;
 };
 const getPlayerName = () => {
-  return internalPlayerName;
+  return player.value.name;
 };
 const useGameConnection = {
   connection,
@@ -80,6 +101,7 @@ const useGameConnection = {
   registerListener,
   getGameKey,
   getPlayerName,
+  test,
 };
 
 export default useGameConnection;

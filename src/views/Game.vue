@@ -14,6 +14,7 @@
           ></ChatMessage>
           <InputText type="text" v-model="chatMessage" />
           <Button label="send" @click="sendMessage" />
+          <Button label="test" @click="test" />
         </div>
       </template>
     </Board>
@@ -44,11 +45,15 @@ export default defineComponent({
     const chatMessage = ref("");
     const route = useRoute();
     const chat = useChat();
-
+    const test1 = useGameConnection;
     const sendMessage = () => {
       chat.sendMessage(chatMessage.value);
     };
-
+    const test = async () => {
+      useGameConnection.test().then((data) => {
+        console.log(data);
+      });
+    };
     onMounted(async () => {
       if (!useGameConnection.getGameKey().value.length) {
         await useGameConnection.joinGame(
@@ -70,6 +75,8 @@ export default defineComponent({
       chatMessages,
       chatMessage,
       sendMessage,
+      test1,
+      test,
     };
   },
 });
