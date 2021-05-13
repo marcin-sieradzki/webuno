@@ -27,32 +27,33 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import useGameConnection from "@/composables/useGameConnection";
+import { useGame } from "@/composables/useGame";
 import { useRouter } from "vue-router";
 export default defineComponent({
   name: "Home",
   setup() {
     const gameKey = ref("");
     const playerName = ref("");
+
     const router = useRouter();
-    const test = useGameConnection;
+    const { startGame: useStartGame, game, joinGame: useJoinGame } = useGame();
+
     const startGame = async () => {
-      await useGameConnection.startGame(playerName.value);
-      await joinGame(useGameConnection.getGameKey().value, playerName.value);
+      await useStartGame(playerName.value);
       router.push({
         name: "Game",
         params: {
-          gameKey: useGameConnection.getGameKey().value,
+          gameKey: game.value.key,
           playerName: playerName.value,
         },
       });
     };
 
-    const joinGame = async (gameKey: string, nick: string) => {
-      await useGameConnection.joinGame(gameKey, nick);
+    const joinGame = async (gameKey: string, playerName: string) => {
+      await useJoinGame(gameKey, playerName);
       router.push({
         name: "Game",
-        params: { gameKey: gameKey, playerName: playerName.value },
+        params: { gameKey: gameKey, playerName: playerName },
       });
     };
     return {
@@ -60,7 +61,6 @@ export default defineComponent({
       playerName,
       startGame,
       joinGame,
-      test,
     };
   },
 });
