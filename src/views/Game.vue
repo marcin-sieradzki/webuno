@@ -3,7 +3,7 @@
     class="
       h-screen
       w-full
-      bg-indigo-400
+      bg-surface-0
       flex
       justify-center
       items-center
@@ -25,16 +25,8 @@
             ></ChatMessage>
           </template>
 
-          <template v-if="players?.length">
-            <span v-for="player in players" :key="player.key">{{
-              player.name
-            }}</span>
-          </template>
-
           <InputText type="text" v-model="chatMessage" />
           <Button label="send" @click="sendMessage" />
-          <Button label="disconnect" @click="disconnect" />
-          <Button label="play card" @click="playCard" />
         </div>
       </template>
     </Board>
@@ -52,7 +44,7 @@ import { useHubConnection } from "@/composables/useHubConnection";
 import { useGame } from "@/composables/useGame";
 import { useChat } from "@/composables/useChat";
 import { useRoute } from "vue-router";
-import { Card, Message, Player, HubResponse } from "@/Types";
+import { Card, Message, Player } from "@/Types";
 
 export default defineComponent({
   name: "Game",
@@ -75,7 +67,6 @@ export default defineComponent({
       joinGame,
       players,
       appendPlayer,
-      fetchGame,
     } = useGame();
 
     const { registerListener } = useHubConnection();
@@ -87,19 +78,7 @@ export default defineComponent({
       await disconnectFromGame();
     };
 
-    const playCard = async () => {
-      const card: Card = {
-        key: player.value.playerCards[0].key,
-        symbol: player.value.playerCards[0].symbol,
-        color: player.value.playerCards[0].color,
-        effect: player.value.playerCards[0].effect,
-        playedBy: player.value.name,
-      };
-      await usePlayCard(game.value.key, player.value.name, card);
-    };
-
     onMounted(async () => {
-      debugger;
       if (!game.value?.key?.length) {
         await joinGame(
           route.params.gameKey.toString(),
@@ -107,16 +86,10 @@ export default defineComponent({
         );
       }
 
-      registerListener(
-        "PlayerJoined",
-        async (response: HubResponse<Player>) => {
-          console.log(
-            "PlayerJoined",
-            await fetchGame(route.params.gameKey.toString())
-          );
-          appendPlayer(response.data);
-        }
-      );
+      registerListener("PlayerJoined", async (response: Player) => {
+        console.log("PlayerJoined");
+        appendPlayer(response);
+      });
       registerListener("PlayerReconnected", (response: Player) => {
         console.log("PlayerReconnected", { response });
         appendPlayer(response);
@@ -136,7 +109,6 @@ export default defineComponent({
       game,
       disconnect,
       player,
-      playCard,
       chatMessages,
       players,
       test,

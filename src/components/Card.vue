@@ -1,6 +1,13 @@
 <template>
   <div
-    class="h-1/5 w-1/12 bg-gray-50 border-8 border-double rounded-lg border-green-300"
+    class="
+      h-60
+      w-40
+      bg-gray-50
+      border-8 border-double
+      rounded-lg
+      border-green-300
+    "
   >
     <div class=""></div>
   </div>

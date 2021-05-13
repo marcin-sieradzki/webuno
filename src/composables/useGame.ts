@@ -24,7 +24,7 @@ export const useGame = () => {
       );
 
       updateGameData(game, newGame, player, playerName);
-      players.value = [...newGame.players];
+
       return true;
     } catch (e) {
       throw new Error(e);
@@ -48,7 +48,6 @@ export const useGame = () => {
       );
 
       updateGameData(game, joinedGame, player, playerName);
-      players.value = [...joinedGame.players];
 
       return true;
     } catch (e) {
@@ -91,7 +90,6 @@ export const useGame = () => {
     }
   };
   const appendPlayer = (playerToAppend: Player) => {
-    debugger;
     if (
       players?.value?.some(
         (player) => player?.key.toString() === playerToAppend.key.toString()
@@ -119,6 +117,7 @@ export const useGame = () => {
     player.value = game.value.players.find(
       (player: Player) => player.name === playerName
     );
+    players.value = [...newGame.players];
   }
   return {
     player: computed(() => player.value),
@@ -129,6 +128,7 @@ export const useGame = () => {
     disconnectFromGame,
     appendPlayer,
     players: computed(() => players.value),
+
     fetchGame,
   };
 };

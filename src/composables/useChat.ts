@@ -17,7 +17,6 @@ export const useChat = () => {
         player.value.name,
         game.value.key
       );
-      chatMessages.value = [...chatMessages.value, messageSent];
     } catch (e) {
       throw new Error(e);
     }
@@ -27,7 +26,7 @@ export const useChat = () => {
     chatMessages.value = [...chatMessages.value, message];
   };
   return {
-    chatMessages: computed(() => chatMessages),
+    chatMessages: computed(() => chatMessages.value),
     sendMessage,
     appendMessage,
   };
