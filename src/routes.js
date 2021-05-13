@@ -4,7 +4,12 @@ import NotFound from "./views/NotFound.vue";
 
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
-  { path: "/", component: Home, meta: { title: "Home" } },
-  { path: "/game", component: Game, meta: { title: "Game" } },
+  { path: "/", component: Home, name: "Home", meta: { title: "Home" } },
+  {
+    path: "/game/:gameKey/:playerName",
+    component: Game,
+    name: "Game",
+    meta: { title: "Game" },
+  },
   { path: "/:path(.*)", component: NotFound },
 ];
