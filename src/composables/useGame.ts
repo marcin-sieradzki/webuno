@@ -1,17 +1,21 @@
+import { HubResponse } from "./../Types";
 import { useHubConnection } from "./useHubConnection";
 import { ref, computed, Ref } from "vue";
 import { Game, Player, Card } from "@/Types";
 import axios from "axios";
+import { useRoute } from "vue-router";
 
 const { isConnected, buildHubConnection, connectToHub, connection } =
   useHubConnection();
 const player = ref<Player | null>(null);
 const game = ref<Game | null>(null);
-const players = ref<Player[]>(null);
-const apiUrl = "https://localhost:44384/api";
+
+const apiUrl = "https://webuno-api.azurewebsites.net/api";
+// const apiUrl = "https://localhost:44384/api";
 
 export const useGame = () => {
-  const startGame = async (playerName: string): Promise<boolean | Error> => {
+  const route = useRoute();
+  const startGame = async (playerName: string): Promise<boolean> => {
     try {
       if (!isConnected.value) {
         buildHubConnection();
@@ -23,8 +27,8 @@ export const useGame = () => {
         playerName
       );
 
-      updateGameData(game, newGame, player, playerName);
-      players.value = [...newGame.players];
+      updateGameData(game, newGame);
+
       return true;
     } catch (e) {
       throw new Error(e);
@@ -34,7 +38,7 @@ export const useGame = () => {
   const joinGame = async (
     gameKey: string,
     playerName: string
-  ): Promise<boolean | Error> => {
+  ): Promise<boolean> => {
     try {
       if (!isConnected.value) {
         buildHubConnection();
@@ -46,10 +50,7 @@ export const useGame = () => {
         gameKey,
         playerName
       );
-
-      updateGameData(game, joinedGame, player, playerName);
-      players.value = [...joinedGame.players];
-
+      updateGameData(game, joinedGame);
       return true;
     } catch (e) {
       throw new Error(e);
@@ -60,7 +61,7 @@ export const useGame = () => {
     gameKey: string,
     playerName: string,
     card: Card
-  ): Promise<boolean | Error> => {
+  ): Promise<boolean> => {
     try {
       await connection.value.invoke("PlayCard", gameKey, playerName, card);
       return true;
@@ -69,16 +70,40 @@ export const useGame = () => {
     }
   };
 
-  const fetchGame = async (key): Promise<Game | Error> => {
+  const drawCard = async (playerName: string, game: Game): Promise<Game> => {
     try {
-      const fetchedGame: Game = await axios.get(`${apiUrl}/game/${key}`);
-      return fetchedGame;
+      const freshGame: Game = await connection.value.invoke(
+        "DrawRandomCard",
+        playerName,
+        game
+      );
+      return freshGame;
     } catch (e) {
       throw new Error(e);
     }
   };
 
-  const disconnectFromGame = async (): Promise<boolean | Error> => {
+  const fetchGame = async (key): Promise<Game> => {
+    try {
+      const fetchedGame: HubResponse<Game> = await axios.get(
+        `${apiUrl}/game/${key}`
+      );
+      return fetchedGame.data;
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+
+  const refreshGame = async (): Promise<void | Error> => {
+    try {
+      const fetchedGame = await fetchGame(game.value.key);
+      game.value = fetchedGame;
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+
+  const disconnectFromGame = async (): Promise<boolean> => {
     try {
       await connection.value.invoke(
         "DisconnectFromGame",
@@ -90,45 +115,42 @@ export const useGame = () => {
       throw new Error(e);
     }
   };
-  const appendPlayer = (playerToAppend: Player) => {
-    debugger;
-    if (
-      players?.value?.some(
-        (player) => player?.key.toString() === playerToAppend.key.toString()
-      )
-    ) {
-      players.value = players.value.map((p) =>
-        p.key.toString() === playerToAppend.key.toString() ? playerToAppend : p
-      );
-      return;
-    }
-    players.value = players.value?.length
-      ? [...players.value, playerToAppend]
-      : [playerToAppend];
-  };
+  // const appendPlayer = (playerToAppend: Player) => {
+  //   if (
+  //     players?.value?.some(
+  //       (player) => player?.key.toString() === playerToAppend.key.toString()
+  //     )
+  //   ) {
+  //     players.value = players.value.map((p) =>
+  //       p.key.toString() === playerToAppend.key.toString() ? playerToAppend : p
+  //     );
+  //     return;
+  //   }
+  //   players.value = players.value?.length
+  //     ? [...players.value, playerToAppend]
+  //     : [playerToAppend];
+  // };
 
-  function updateGameData(
-    game: Ref<Game>,
-    newGame: Game,
-    player: Ref<Player>,
-    playerName: string
-  ) {
-    if (!game.value) {
-      game.value = newGame;
-    }
-    player.value = game.value.players.find(
-      (player: Player) => player.name === playerName
-    );
+  function updateGameData(game: Ref<Game>, newGame: Game) {
+    game.value = newGame;
   }
   return {
-    player: computed(() => player.value),
+    player: computed(() =>
+      game.value.players.find(
+        (player: Player) => player.name === route.params.playerName.toString()
+      )
+    ),
     game: computed(() => game.value),
     startGame,
     joinGame,
     playCard,
     disconnectFromGame,
-    appendPlayer,
-    players: computed(() => players.value),
+    // appendPlayer,
+    players: computed(() => game?.value?.players),
+    currentTurn: computed(() => game?.value?.currentPlayerTurn),
+    playedCards: computed(() => game?.value?.cardsPlayed || []),
+    refreshGame,
     fetchGame,
+    drawCard,
   };
 };
