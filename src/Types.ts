@@ -2,13 +2,15 @@ export interface Game {
   key: string;
   players: Player[];
   cardsPlayed: Card[];
-  currentPlayerTrun: string;
+  currentPlayerTurn: string;
 }
 export interface Player {
   key: string;
   name: string;
   isHost: Boolean;
   playerCards: Card[];
+  turnIndex: number;
+  sitIndex: number;
 }
 
 export interface Card {
@@ -31,4 +33,10 @@ export interface HubResponse<T> {
   request: XMLHttpRequest;
   status: number;
   statusText: string;
+}
+
+export interface CardPlayedResponse {
+  gameKey: string;
+  playerName: string;
+  card: Card;
 }

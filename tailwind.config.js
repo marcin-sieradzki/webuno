@@ -9,6 +9,9 @@ module.exports = {
       fontFamily: {
         sans: ['"Inter var"', ...defaultTheme.fontFamily.sans],
       },
+      rotate: {
+        270: "270deg",
+      },
       colors: {
         "blue-50": "var(--blue-50)",
         "blue-100": "var(--blue-100)",

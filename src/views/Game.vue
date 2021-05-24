@@ -1,35 +1,19 @@
 <template>
-  <div
-    class="
-      h-screen
-      w-full
-      bg-surface-0
-      flex
-      justify-center
-      items-center
-      overflow-hidden
-    "
-  >
-    <Board>
-      <template v-slot:board>
-        <Table> </Table>
+  <div class="h-screen max-h-full w-full bg-surface-0 overflow-hidden game">
+    <Table> </Table>
+    <div class="flex flex-col flex-initial p-3">
+      <template v-if="chatMessages?.length">
+        <ChatMessage
+          v-for="(message, i) in chatMessages"
+          :key="i"
+          :message="message.message"
+          :playerName="message.playerName"
+        ></ChatMessage>
       </template>
-      <template v-slot:sidebar>
-        <div class="flex flex-col p-3">
-          <template v-if="chatMessages?.length">
-            <ChatMessage
-              v-for="(message, i) in chatMessages"
-              :key="i"
-              :message="message.message"
-              :playerName="message.playerName"
-            ></ChatMessage>
-          </template>
 
-          <InputText type="text" v-model="chatMessage" />
-          <Button label="send" @click="sendMessage" />
-        </div>
-      </template>
-    </Board>
+      <InputText type="text" v-model="chatMessage" />
+      <Button label="send" @click="sendMessage" />
+    </div>
   </div>
 </template>
 
@@ -44,7 +28,7 @@ import { useHubConnection } from "@/composables/useHubConnection";
 import { useGame } from "@/composables/useGame";
 import { useChat } from "@/composables/useChat";
 import { useRoute } from "vue-router";
-import { Card, Message, Player } from "@/Types";
+import { CardPlayedResponse, Game, Message, Player } from "@/Types";
 
 export default defineComponent({
   name: "Game",
@@ -52,7 +36,7 @@ export default defineComponent({
   setup() {
     const chatMessage = ref("");
     const route = useRoute();
-    const test = useGame();
+
     const {
       sendMessage: useSendMessage,
       chatMessages,
@@ -62,11 +46,11 @@ export default defineComponent({
     const {
       player,
       disconnectFromGame,
-      playCard: usePlayCard,
       game,
       joinGame,
       players,
-      appendPlayer,
+      // appendPlayer,
+      refreshGame,
     } = useGame();
 
     const { registerListener } = useHubConnection();
@@ -88,16 +72,24 @@ export default defineComponent({
 
       registerListener("PlayerJoined", async (response: Player) => {
         console.log("PlayerJoined");
-        appendPlayer(response);
+        // appendPlayer(response);
+        await refreshGame();
       });
-      registerListener("PlayerReconnected", (response: Player) => {
+      registerListener("PlayerReconnected", async (response: Player) => {
         console.log("PlayerReconnected", { response });
-        appendPlayer(response);
+        // appendPlayer(response);
+        await refreshGame();
       });
 
       registerListener("MessageReceived", (data: Message) => {
         console.log("MessageReceived", { data });
         appendMessage(data);
+      });
+      registerListener("CardPlayed", async (data: CardPlayedResponse) => {
+        await refreshGame();
+      });
+      registerListener("CardDrew", async (data: Game) => {
+        await refreshGame();
       });
     });
     onBeforeUnmount(async () => {
@@ -111,10 +103,15 @@ export default defineComponent({
       player,
       chatMessages,
       players,
-      test,
     };
   },
 });
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.game {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  grid-template-rows: 1fr;
+}
+</style>

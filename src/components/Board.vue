@@ -1,5 +1,7 @@
 <template>
-  <div class="h-5/6 w-4/5 grid grid-cols-[6fr,1.5fr] bg-indigo-100 max-h-full">
+  <div
+    class="h-full w-full grid grid-cols-[6fr,1.5fr] bg-indigo-100 max-h-full"
+  >
     <div><slot name="board"></slot></div>
     <div class="bg-surface-100"><slot name="sidebar"></slot></div>
   </div>
