@@ -10,11 +10,14 @@ import "primeicons/primeicons.css";
 
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
-
+import Dialog from "primevue/dialog";
+import Avatar from "primevue/avatar";
 const app = createApp(App);
 
 app.component("Button", Button);
 app.component("InputText", InputText);
+app.component("Dialog", Dialog);
+app.component("Avatar", Avatar);
 
 const router = createRouter({
   history: createWebHistory(),

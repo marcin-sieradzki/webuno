@@ -10,15 +10,34 @@
           :playerName="message.playerName"
         ></ChatMessage>
       </template>
-
       <InputText type="text" v-model="chatMessage" />
       <Button label="send" @click="sendMessage" />
     </div>
   </div>
+  <Dialog
+    header="Game over"
+    v-model:visible="showWinnerModal"
+    :closable="false"
+  >
+    <div class="p-3 pl-0">
+      <p class="pb-2">The winner is: {{ winner.name }}</p>
+      <router-link :to="{ name: 'Home' }"
+        ><span class="text-blue-400 hover:underline hover:text-blue-600"
+          >Back to main page</span
+        ></router-link
+      >
+    </div>
+  </Dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, onBeforeUnmount } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  onBeforeUnmount,
+  computed,
+} from "vue";
 
 import Board from "@/components/Board.vue";
 import Table from "@/components/Table.vue";
@@ -43,19 +62,20 @@ export default defineComponent({
       appendMessage,
     } = useChat();
 
-    const {
-      player,
-      disconnectFromGame,
-      game,
-      joinGame,
-      players,
-      // appendPlayer,
-      refreshGame,
-    } = useGame();
+    const { player, disconnectFromGame, game, joinGame, players, refreshGame } =
+      useGame();
+
+    const winner = computed(() => {
+      const winnerId = game?.value?.winnerId;
+      return winnerId
+        ? game.value.players.find((player) => player.key == winnerId)
+        : null;
+    });
 
     const { registerListener } = useHubConnection();
     const sendMessage = () => {
-      useSendMessage(chatMessage.value);
+      useSendMessage(chatMessage.value, player.value.name, game.value.key);
+      chatMessage.value = "";
     };
 
     const disconnect = async () => {
@@ -72,12 +92,10 @@ export default defineComponent({
 
       registerListener("PlayerJoined", async (response: Player) => {
         console.log("PlayerJoined");
-        // appendPlayer(response);
         await refreshGame();
       });
       registerListener("PlayerReconnected", async (response: Player) => {
         console.log("PlayerReconnected", { response });
-        // appendPlayer(response);
         await refreshGame();
       });
 
@@ -103,6 +121,10 @@ export default defineComponent({
       player,
       chatMessages,
       players,
+      winner,
+      showWinnerModal: computed(() => {
+        winner?.value?.key.length ? true : false;
+      }),
     };
   },
 });

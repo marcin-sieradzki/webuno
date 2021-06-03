@@ -9,7 +9,7 @@ const { isConnected, buildHubConnection, connectToHub, connection } =
   useHubConnection();
 const player = ref<Player | null>(null);
 const game = ref<Game | null>(null);
-
+const isPlayingCard = ref<boolean>(false);
 const apiUrl = "https://webuno-api.azurewebsites.net/api";
 // const apiUrl = "https://localhost:44384/api";
 
@@ -115,21 +115,6 @@ export const useGame = () => {
       throw new Error(e);
     }
   };
-  // const appendPlayer = (playerToAppend: Player) => {
-  //   if (
-  //     players?.value?.some(
-  //       (player) => player?.key.toString() === playerToAppend.key.toString()
-  //     )
-  //   ) {
-  //     players.value = players.value.map((p) =>
-  //       p.key.toString() === playerToAppend.key.toString() ? playerToAppend : p
-  //     );
-  //     return;
-  //   }
-  //   players.value = players.value?.length
-  //     ? [...players.value, playerToAppend]
-  //     : [playerToAppend];
-  // };
 
   function updateGameData(game: Ref<Game>, newGame: Game) {
     game.value = newGame;
@@ -146,11 +131,16 @@ export const useGame = () => {
     playCard,
     disconnectFromGame,
     // appendPlayer,
-    players: computed(() => game?.value?.players),
+    players: computed(() =>
+      game?.value?.players.sort((currentPlayer, nextPlayer) => {
+        return currentPlayer.sitIndex - nextPlayer.sitIndex;
+      })
+    ),
     currentTurn: computed(() => game?.value?.currentPlayerTurn),
     playedCards: computed(() => game?.value?.cardsPlayed || []),
     refreshGame,
     fetchGame,
     drawCard,
+    isPlayingCard: computed(() => isPlayingCard.value),
   };
 };

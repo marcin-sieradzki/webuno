@@ -1,36 +1,54 @@
 <template>
-  <main
-    class="h-screen w-screen flex flex-col justify-center items-center bg-surface-b"
+  <section
+    class="
+      h-screen
+      w-screen
+      flex flex-col
+      justify-center
+      items-center
+      bg-surface-b
+    "
   >
-    <h1 class="text-text-color mb-16 text-4xl font-semibold">Webuno</h1>
-    <section
-      class="flex flex-col items-center justify-between max-w-sm max-h-72 p-6 bg-surface-a h-2/6"
+    <h1 class="text-text-color text-4xl font-semibold">Webuno</h1>
+    <div
+      class="form-scene h-full w-full flex flex-col justify-center items-center"
     >
-      <label for="playerName" class="text-text-color">Player Name</label>
-      <InputText
-        type="text"
-        id="playerName"
-        v-model="playerName"
-        class="w-full"
-      />
-      <label for="gameKey" class="text-text-color">Game Key</label>
-      <InputText type="text" id="gameKey" v-model="gameKey" class="w-full" />
-      <Button label="New game" class="w-full" @click="startGame" />
-      <Button
-        label="Join game"
-        class="w-full"
-        @click="joinGame(gameKey, playerName)"
-      />
-    </section>
-  </main>
+      <FlipCardForm>
+        <template #front="{ toggleShowFront }">
+          <JoinGameFrontFace
+            @toggleShowFront="toggleShowFront"
+            @startGame="startGame"
+            @playerNameUpdated="playerName = $event"
+          ></JoinGameFrontFace>
+        </template>
+        <template #back="{ toggleShowFront }">
+          <GameFormBack
+            @toggleShowFront="toggleShowFront"
+            @joinGame="joinGame(gameKey, playerName)"
+            @playerNameUpdated="playerName = $event"
+            @gameKeyUpdated="gameKey = $event"
+          ></GameFormBack>
+        </template>
+      </FlipCardForm>
+    </div>
+  </section>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useGame } from "@/composables/useGame";
 import { useRouter } from "vue-router";
+import FlipCardForm from "@/components/Forms/FlipCardForm.vue";
+import JoinGameFrontFace from "@/components/Home/JoinGameFrontFace.vue";
+import GameFormBack from "@/components/Home/GameFormBack.vue";
+
 export default defineComponent({
   name: "Home",
+  components: {
+    FlipCardForm,
+    JoinGameFrontFace,
+    GameFormBack,
+  },
   setup() {
     const gameKey = ref("");
     const playerName = ref("");
@@ -66,4 +84,4 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style lang="scss"></style>

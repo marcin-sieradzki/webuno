@@ -1,16 +1,23 @@
 import { Player } from "@/Types";
+import { useGame } from "@/composables/useGame";
+
 export const useTable = () => {
-  const getCardsPosition = (player: Player) => {
-    if (player.isHost) {
-      return "bottom-0 right-0 transform translate-x-[-25%]";
-    }
-    switch (player.sitIndex) {
+  const getCardsPosition = (cardsOwner: Player) => {
+    const { player } = useGame();
+
+    // if (cardsOwner.name === player.value.name) {
+    //   return "col-start-2 row-start-3";
+    // }
+
+    switch (cardsOwner.sitIndex) {
+      case 1:
+        return "col-start-2 row-start-3";
       case 2:
-        return "right-0 top-0 transform origin-right rotate-270 translate-x-[-11%] translate-y-[-50%]";
+        return "col-start-1 row-start-2 transform rotate-90";
       case 3:
-        return "top-0 right-0 transform rotate-180 transform translate-x-[-25%]";
+        return "col-start-2 row-start-1 transform rotate-180";
       case 4:
-        return "left-0 top-0 transform origin-left  rotate-90 translate-x-[11%] translate-y-[-50%]";
+        return "col-start-3 row-start-2 transform rotate-270";
       default:
         break;
     }

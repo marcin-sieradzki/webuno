@@ -3,6 +3,8 @@ export interface Game {
   players: Player[];
   cardsPlayed: Card[];
   currentPlayerTurn: string;
+  deck: Card[];
+  winnerId: string;
 }
 export interface Player {
   key: string;
@@ -17,7 +19,6 @@ export interface Card {
   key: string;
   symbol: string;
   color: string;
-  effect: string;
   playedBy: string;
 }
 export interface Message {
@@ -39,4 +40,11 @@ export interface CardPlayedResponse {
   gameKey: string;
   playerName: string;
   card: Card;
+}
+export type CardType = "hand" | "stack" | "played";
+
+export enum CardTypeEnum {
+  hand = "hand",
+  stack = "stack",
+  played = "played",
 }

@@ -5,18 +5,22 @@ import { computed, ref } from "vue";
 import { Message } from "@/Types";
 
 const chatMessages = ref<Message[]>([]);
-const { game, player } = useGame();
 const { connection } = useHubConnection();
 
 export const useChat = () => {
-  const sendMessage = async (message: string) => {
+  const sendMessage = async (
+    message: string,
+    playerName: string,
+    gameKey: string
+  ) => {
     try {
       const messageSent = await connection.value.invoke(
         "SendMessage",
         message,
-        player.value.name,
-        game.value.key
+        playerName,
+        gameKey
       );
+      return messageSent;
     } catch (e) {
       throw new Error(e);
     }

@@ -11,8 +11,21 @@ module.exports = {
       },
       rotate: {
         270: "270deg",
+        18: "18deg",
+        "negative-18": "-18deg",
+      },
+      minWidth: {
+        40: "10rem",
+        36: "9rem",
+      },
+      maxWidth: {
+        36: "9rem",
+      },
+      zIndex: {
+        "-10": "-10",
       },
       colors: {
+        "red-900": "rgb(255,0,0)",
         "blue-50": "var(--blue-50)",
         "blue-100": "var(--blue-100)",
         "blue-200": "var(--blue-200)",
