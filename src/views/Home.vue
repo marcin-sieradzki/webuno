@@ -10,27 +10,23 @@
     "
   >
     <h1 class="text-text-color text-4xl font-semibold">Webuno</h1>
-    <div
-      class="form-scene h-full w-full flex flex-col justify-center items-center"
-    >
-      <FlipCardForm>
-        <template #front="{ toggleShowFront }">
-          <JoinGameFrontFace
-            @toggleShowFront="toggleShowFront"
-            @startGame="startGame"
-            @playerNameUpdated="playerName = $event"
-          ></JoinGameFrontFace>
-        </template>
-        <template #back="{ toggleShowFront }">
-          <GameFormBack
-            @toggleShowFront="toggleShowFront"
-            @joinGame="joinGame(gameKey, playerName)"
-            @playerNameUpdated="playerName = $event"
-            @gameKeyUpdated="gameKey = $event"
-          ></GameFormBack>
-        </template>
-      </FlipCardForm>
-    </div>
+    <FlipCardForm>
+      <template #front="{ toggleShowFront }">
+        <JoinGameFrontFace
+          @toggleShowFront="toggleShowFront"
+          @startGame="startGame"
+          @playerNameUpdated="playerName = $event"
+        ></JoinGameFrontFace>
+      </template>
+      <template #back="{ toggleShowFront }">
+        <GameFormBack
+          @toggleShowFront="toggleShowFront"
+          @joinGame="joinGame(gameKey, playerName)"
+          @playerNameUpdated="playerName = $event"
+          @gameKeyUpdated="gameKey = $event"
+        ></GameFormBack>
+      </template>
+    </FlipCardForm>
   </section>
 </template>
 
