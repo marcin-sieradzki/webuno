@@ -53,21 +53,52 @@
       };
 
       const getCardsPosition = (cardsOwner: Player) => {
-        const { player } = useGame();
+        if (cardsOwner.name === player.value.name) {
+          return 'col-start-2 row-start-3';
+        }
+        const playerSitIndex = player.value.sitIndex;
 
-        // if (cardsOwner.name === player.value.name) {
-        //   return "col-start-2 row-start-3";
-        // }
-
-        switch (cardsOwner.sitIndex) {
+        switch (playerSitIndex) {
           case 1:
-            return 'col-start-2 row-start-3';
+            if (cardsOwner.sitIndex == 2) {
+              return 'col-start-1 row-start-2 transform rotate-90';
+            }
+            if (cardsOwner.sitIndex == 3) {
+              return 'col-start-2 row-start-1 transform rotate-180';
+            }
+            if (cardsOwner.sitIndex == 4) {
+              return 'col-start-3 row-start-2 transform rotate-270';
+            }
           case 2:
-            return 'col-start-1 row-start-2 transform rotate-90';
+            if (cardsOwner.sitIndex == 3) {
+              return 'col-start-1 row-start-2 transform rotate-90';
+            }
+            if (cardsOwner.sitIndex == 4) {
+              return 'col-start-2 row-start-1 transform rotate-180';
+            }
+            if (cardsOwner.sitIndex == 1) {
+              return 'col-start-3 row-start-2 transform rotate-270';
+            }
           case 3:
-            return 'col-start-2 row-start-1 transform rotate-180';
+            if (cardsOwner.sitIndex == 4) {
+              return 'col-start-1 row-start-2 transform rotate-90';
+            }
+            if (cardsOwner.sitIndex == 1) {
+              return 'col-start-2 row-start-1 transform rotate-180';
+            }
+            if (cardsOwner.sitIndex == 2) {
+              return 'col-start-3 row-start-2 transform rotate-270';
+            }
           case 4:
-            return 'col-start-3 row-start-2 transform rotate-270';
+            if (cardsOwner.sitIndex == 1) {
+              return 'col-start-1 row-start-2 transform rotate-90';
+            }
+            if (cardsOwner.sitIndex == 2) {
+              return 'col-start-2 row-start-1 transform rotate-180';
+            }
+            if (cardsOwner.sitIndex == 3) {
+              return 'col-start-3 row-start-2 transform rotate-270';
+            }
           default:
             break;
         }
