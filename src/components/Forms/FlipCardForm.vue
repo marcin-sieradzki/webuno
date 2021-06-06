@@ -13,6 +13,7 @@
         relative
       "
       :class="{ 'is-flipped': !showFront }"
+      @submit.prevent
     >
       <section class="absolute h-full w-full p-6 face" v-if="showFront">
         <slot name="front" v-bind:toggleShowFront="toggleShowFront"></slot>

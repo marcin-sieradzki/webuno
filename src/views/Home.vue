@@ -12,18 +12,18 @@
     <h1 class="text-text-color text-4xl font-semibold">Webuno</h1>
     <FlipCardForm>
       <template #front="{ toggleShowFront }">
-        <JoinGameFrontFace
+        <GameFormFront
+          v-model="playerName"
           @toggleShowFront="toggleShowFront"
           @startGame="startGame"
-          @playerNameUpdated="playerName = $event"
-        ></JoinGameFrontFace>
+        ></GameFormFront>
       </template>
       <template #back="{ toggleShowFront }">
         <GameFormBack
+          v-model:playerName="playerName"
+          v-model:gameKey="gameKey"
           @toggleShowFront="toggleShowFront"
           @joinGame="joinGame(gameKey, playerName)"
-          @playerNameUpdated="playerName = $event"
-          @gameKeyUpdated="gameKey = $event"
         ></GameFormBack>
       </template>
     </FlipCardForm>
@@ -31,18 +31,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, reactive, ref, toRefs } from "vue";
+import useVuelidate from "@vuelidate/core";
+import { required, minLength } from "@vuelidate/validators";
+
 import { useGame } from "@/composables/useGame";
 import { useRouter } from "vue-router";
 import FlipCardForm from "@/components/Forms/FlipCardForm.vue";
-import JoinGameFrontFace from "@/components/Home/JoinGameFrontFace.vue";
+import GameFormFront from "@/components/Home/GameFormFront.vue";
 import GameFormBack from "@/components/Home/GameFormBack.vue";
 
 export default defineComponent({
   name: "Home",
   components: {
     FlipCardForm,
-    JoinGameFrontFace,
+    GameFormFront,
     GameFormBack,
   },
   setup() {
@@ -54,27 +57,34 @@ export default defineComponent({
 
     const startGame = async () => {
       await useStartGame(playerName.value);
-      router.push({
-        name: "Game",
-        params: {
-          gameKey: game.value.key,
-          playerName: playerName.value,
-        },
-      });
+      navigateToGame(game.value.key, playerName.value);
     };
 
     const joinGame = async (gameKey: string, playerName: string) => {
       await useJoinGame(gameKey, playerName);
+      navigateToGame(gameKey, playerName);
+    };
+
+    const navigateToGame = (gameKey: string, playerName: string) => {
       router.push({
         name: "Game",
-        params: { gameKey: gameKey, playerName: playerName },
+        params: { gameKey, playerName },
       });
     };
+
+    const rules = {
+      gameKey: { required },
+      playerName: { required, minLength: minLength(3) },
+    };
+
+    const v$ = useVuelidate(rules, { gameKey, playerName });
+
     return {
       gameKey,
       playerName,
       startGame,
       joinGame,
+      v$,
     };
   },
 });

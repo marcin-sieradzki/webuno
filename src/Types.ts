@@ -1,3 +1,5 @@
+import { Ref } from "vue";
+
 export interface Game {
   key: string;
   players: Player[];
@@ -47,4 +49,10 @@ export enum CardTypeEnum {
   hand = "hand",
   stack = "stack",
   played = "played",
+}
+
+export interface PromiseResponse {
+  data: any;
+  loading: Ref<boolean>;
+  error: any;
 }

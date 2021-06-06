@@ -5,8 +5,7 @@ import {
   HubConnection,
 } from "@microsoft/signalr";
 
-const connection = ref<HubConnection | null>(null);
-// const hubUrl = "https://localhost:44384/gamehub";
+const connection = ref<HubConnection>(null);
 const hubUrl = "https://webuno-api.azurewebsites.net/gamehub";
 
 export const useHubConnection = () => {

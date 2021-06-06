@@ -1,28 +1,35 @@
-import { Player } from "@/Types";
-import { useGame } from "@/composables/useGame";
+import { useGame } from '@/composables/useGame';
+import { computed } from 'vue';
+import { useFetcher } from '@/composables/useFetcher';
 
 export const useTable = () => {
-  const getCardsPosition = (cardsOwner: Player) => {
-    const { player } = useGame();
+  const { player, currentTurn, drawCardFetcher, playCardFetcher } = useGame();
+  const {
+    loading: isDrawingCard,
+    error: drawCardError,
+    getData: drawCard,
+  } = useFetcher(drawCardFetcher);
 
-    // if (cardsOwner.name === player.value.name) {
-    //   return "col-start-2 row-start-3";
-    // }
+  const {
+    loading: isPlayingCard,
+    error: playCardError,
+    getData: playCard,
+  } = useFetcher(playCardFetcher);
+  console.log(player.value);
+  const isPlayerTurn = computed(() => {
+    return currentTurn.value === player?.value?.name;
+  });
 
-    switch (cardsOwner.sitIndex) {
-      case 1:
-        return "col-start-2 row-start-3";
-      case 2:
-        return "col-start-1 row-start-2 transform rotate-90";
-      case 3:
-        return "col-start-2 row-start-1 transform rotate-180";
-      case 4:
-        return "col-start-3 row-start-2 transform rotate-270";
-      default:
-        break;
-    }
-  };
+  const disableCardActions = computed(() => {
+    return !isPlayerTurn.value || isDrawingCard.value || isPlayingCard.value;
+  });
+
   return {
-    getCardsPosition,
+    isPlayerTurn,
+    disableCardActions,
+    drawCard,
+    playCard,
+    drawCardError,
+    playCardError,
   };
 };
