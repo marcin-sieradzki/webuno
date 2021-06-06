@@ -5,7 +5,7 @@
   >
     <Table> </Table>
     <Chat></Chat>
-    <GameWinnerDialog />
+    <GameWinnerDialog v-if="winner" :winner="winner" />
   </div>
 </template>
 
@@ -29,16 +29,18 @@
     components: { Board, Table, Chat, GameWinnerDialog },
     setup() {
       const route = useRoute();
-
+      const { appendMessage } = useChat();
       const {
         player,
         disconnectFromGame,
         game,
-        joinGame,
         players,
         refreshGame,
+        joinGame,
+        isJoiningGame,
+        joinGameError,
       } = useGame();
-      const { appendMessage } = useChat();
+
       const winner = computed(() => {
         const winnerId = game?.value?.winnerId;
         return winnerId
@@ -54,10 +56,10 @@
 
       onMounted(async () => {
         if (!game.value?.key?.length) {
-          await joinGame(
-            route.params.gameKey.toString(),
-            route.params.playerName.toString()
-          );
+          await joinGame({
+            gameKey: route.params.gameKey.toString(),
+            playerName: route.params.playerName.toString(),
+          });
         }
 
         registerListener('PlayerJoined', async (response: Player) => {
@@ -89,8 +91,10 @@
         player,
         players,
         winner,
+        isJoiningGame,
+        joinGameError,
         showWinnerModal: computed(() => {
-          winner?.value?.key.length ? true : false;
+          return winner.value?.key ? true : false;
         }),
       };
     },

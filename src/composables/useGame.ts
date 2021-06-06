@@ -1,15 +1,27 @@
+import { useFetcher } from '@/composables/useFetcher';
 import { HubResponse } from './../Types';
 import { useHubConnection } from './useHubConnection';
-import { ref, computed, Ref, reactive, toRefs } from 'vue';
+import { ref, computed, Ref, reactive, toRefs, toRef } from 'vue';
 import { Game, Player, Card } from '@/Types';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 
 const { isConnected, buildHubConnection, connectToHub, connection } =
   useHubConnection();
-const game = ref<Game | null>(null);
 
 const apiUrl = 'https://webuno-api.azurewebsites.net/api';
+const game = ref<Game | null>(null);
+const joinGameState = reactive({ isJoiningGame: false, joinGameError: null });
+const drawCardState = reactive({ isDrawingCard: false, drawCardError: null });
+const playCardState = reactive({ isPlayingCard: false, playCardError: null });
+const refreshGameState = reactive({
+  isRefreshingGame: false,
+  refreshGameError: null,
+});
+const startGameState = reactive({
+  isStartingGame: false,
+  startGameError: null,
+});
 
 interface PlayCardParams {
   gameKey: string;
@@ -20,11 +32,16 @@ interface DrawCardParams {
   playerName: string;
   game: Game;
 }
+interface JoinGameParams {
+  gameKey: string;
+  playerName: string;
+}
 
 export const useGame = () => {
   const route = useRoute();
   const startGame = async (playerName: string): Promise<boolean> => {
     try {
+      startGameState.isStartingGame = true;
       if (!isConnected.value) {
         buildHubConnection();
         await connectToHub();
@@ -38,41 +55,63 @@ export const useGame = () => {
 
       return true;
     } catch (e) {
+      startGameState.startGameError = true;
       throw new Error(e);
+    } finally {
+      startGameState.isStartingGame = false;
     }
   };
-
-  const joinGame = async (
-    gameKey: string,
-    playerName: string
-  ): Promise<boolean> => {
+  async function joinGame({ gameKey, playerName }: JoinGameParams) {
     try {
+      joinGameState.isJoiningGame = true;
       if (!isConnected.value) {
         buildHubConnection();
         await connectToHub();
       }
-
       const joinedGame: Game = await connection.value.invoke(
         'JoinGame',
         gameKey,
         playerName
       );
       updateGameData(game, joinedGame);
-      return true;
+      return joinedGame;
     } catch (e) {
-      throw new Error(e);
+      joinGameState.joinGameError = e;
+    } finally {
+      joinGameState.isJoiningGame = false;
+    }
+  }
+
+  const playCard = async ({ gameKey, playerName, card }: PlayCardParams) => {
+    playCardState.isPlayingCard = true;
+    try {
+      const playedCard = await connection.value.invoke(
+        'PlayCard',
+        gameKey,
+        playerName,
+        card
+      );
+      return playedCard;
+    } catch (e) {
+      playCardState.playCardError = e;
+    } finally {
+      playCardState.isPlayingCard = false;
     }
   };
-
-  const playCardFetcher = async ({
-    gameKey,
-    playerName,
-    card,
-  }: PlayCardParams) => {
-    return await connection.value.invoke('PlayCard', gameKey, playerName, card);
-  };
-  const drawCardFetcher = async ({ playerName, game }: DrawCardParams) => {
-    return await connection.value.invoke('DrawRandomCard', playerName, game);
+  const drawCard = async ({ playerName, game }: DrawCardParams) => {
+    drawCardState.isDrawingCard = true;
+    try {
+      const drawnCard = await connection.value.invoke(
+        'DrawRandomCard',
+        playerName,
+        game
+      );
+      return drawnCard;
+    } catch (e) {
+      drawCardState.drawCardError = e;
+    } finally {
+      drawCardState.isDrawingCard = false;
+    }
   };
 
   const fetchGame = async (key): Promise<Game> => {
@@ -87,11 +126,15 @@ export const useGame = () => {
   };
 
   const refreshGame = async (): Promise<void | Error> => {
+    refreshGameState.isRefreshingGame = true;
     try {
       const fetchedGame = await fetchGame(game.value.key);
       game.value = fetchedGame;
     } catch (e) {
+      refreshGameState.refreshGameError = e;
       throw new Error(e);
+    } finally {
+      refreshGameState.isRefreshingGame = false;
     }
   };
 
@@ -117,21 +160,24 @@ export const useGame = () => {
         (player: Player) => player.name === route?.params?.playerName.toString()
       )
     ),
-    game: computed(() => game.value),
-    startGame,
-    joinGame,
-
-    disconnectFromGame,
     players: computed(() =>
       game?.value?.players?.sort((currentPlayer, nextPlayer) => {
         return currentPlayer.sitIndex - nextPlayer.sitIndex;
       })
     ),
+    game: computed(() => game.value),
     currentTurn: computed(() => game?.value?.currentPlayerTurn),
     playedCards: computed(() => game?.value?.cardsPlayed || []),
+    startGame,
+    disconnectFromGame,
     refreshGame,
     fetchGame,
-    drawCardFetcher,
-    playCardFetcher,
+    drawCard,
+    playCard,
+    joinGame,
+    ...toRefs(drawCardState),
+    ...toRefs(playCardState),
+    ...toRefs(joinGameState),
+    ...toRefs(startGameState),
   };
 };

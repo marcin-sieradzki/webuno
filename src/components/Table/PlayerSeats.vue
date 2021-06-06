@@ -9,7 +9,6 @@
       <PlayerAvatar
         class="absolute right-0"
         :playerName="player.name"
-        :rotate="getAvatarRotation(player.sitIndex)"
         :active="currentTurn === player.name"
       />
       <Card
@@ -44,21 +43,21 @@
     name: 'PlayerSeats',
     components: { Card, CardStack, PlayerAvatar, MiddleTable },
     setup() {
-      const { players, player, game, currentTurn } = useGame();
+      const { players, player, game, currentTurn, playCard } = useGame();
       console.log({ players, player, game, currentTurn });
-      const { playCard, disableCardActions, isPlayerTurn } = useTable();
+      const { disableCardActions, isPlayerTurn, isDrawingCard } = useTable();
 
       const shouldReverseCard = (playerToCheck: Player, playerName: string) => {
         return playerToCheck.name !== playerName;
       };
 
       const getCardsPosition = (cardsOwner: Player) => {
+        //TODO: Make it in a more clever way? :D
         if (cardsOwner.name === player.value.name) {
           return 'col-start-2 row-start-3';
         }
-        const playerSitIndex = player.value.sitIndex;
 
-        switch (playerSitIndex) {
+        switch (player.value.sitIndex) {
           case 1:
             if (cardsOwner.sitIndex == 2) {
               return 'col-start-1 row-start-2 transform rotate-90';
@@ -99,21 +98,6 @@
             if (cardsOwner.sitIndex == 3) {
               return 'col-start-3 row-start-2 transform rotate-270';
             }
-          default:
-            break;
-        }
-      };
-
-      const getAvatarRotation = (sitIndex: number) => {
-        switch (sitIndex) {
-          case 1:
-            return 'rotate-0';
-          case 2:
-            return '-rotate-90';
-          case 3:
-            return 'rotate-180';
-          case 4:
-            return 'rotate-90';
           default:
             break;
         }
@@ -126,7 +110,7 @@
         game,
         shouldReverseCard,
         currentTurn,
-        getAvatarRotation,
+        isDrawingCard,
         playCard,
         disableCardActions,
         isPlayerTurn,

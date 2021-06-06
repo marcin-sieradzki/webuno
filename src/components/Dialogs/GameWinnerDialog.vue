@@ -1,9 +1,5 @@
 <template>
-  <Dialog
-    header="Game over"
-    v-model:visible="showWinnerModal"
-    :closable="false"
-  >
+  <Dialog header="Game over" v-model:visible="visible" :closable="false">
     <div class="p-3 pl-0">
       <p class="pb-2">The winner is: {{ winner.name }}</p>
       <router-link :to="{ name: 'Home' }"
@@ -16,27 +12,21 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, computed } from 'vue';
-  import { useGame } from '@/composables/useGame';
+  import { Player } from '@/Types';
+  import { defineComponent, PropType, ref } from 'vue';
 
   export default defineComponent({
     name: 'GameWinnerDialog',
-
+    props: {
+      winner: {
+        type: Object as PropType<Player>,
+        required: true,
+      },
+    },
     setup() {
-      const { game } = useGame();
-
-      const winner = computed(() => {
-        const winnerId = game?.value?.winnerId;
-        return winnerId
-          ? game.value.players.find((player) => player.key == winnerId)
-          : null;
-      });
-
+      const visible = ref(true);
       return {
-        winner,
-        showWinnerModal: computed(() => {
-          winner?.value?.key.length ? true : false;
-        }),
+        visible,
       };
     },
   });

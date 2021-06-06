@@ -6,29 +6,35 @@
       type="text"
       id="playerName"
       :value="modelValue"
+      :disabled="loading"
       @update:modelValue="$emit('update:modelValue', $event)"
     />
     <Button
       label="Create new game"
       class="mt-2"
       type="submit"
+      :disabled="loading"
       @click="$emit('startGame')"
     />
   </div>
-  <Button @click="$emit('toggleShowFront')" class="bottom-16 p-button-text"
+  <Button
+    :disabled="loading"
+    @click="$emit('toggleShowFront')"
+    class="bottom-16 p-button-text"
     >Join game</Button
   >
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "GameFormFront",
-  emits: ["toggleShowFront", "update:modelValue", "startGame"],
-  props: {
-    modelValue: {
-      type: String,
+  import { defineComponent } from 'vue';
+  export default defineComponent({
+    name: 'GameFormFront',
+    emits: ['toggleShowFront', 'update:modelValue', 'startGame'],
+    props: {
+      modelValue: {
+        type: String,
+      },
+      loading: Boolean,
     },
-  },
-});
+  });
 </script>

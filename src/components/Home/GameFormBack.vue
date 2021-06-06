@@ -8,6 +8,7 @@
       :value="gameKey"
       @update:modelValue="$emit('update:gameKey', $event)"
       class="w-full"
+      :disabled="loading"
     />
     <label for="name" class="text-text-color">Name</label>
     <InputText
@@ -16,11 +17,13 @@
       :value="playerName"
       @update:modelValue="$emit('update:playerName', $event)"
       class="w-full"
+      :disabled="loading"
     />
     <Button
       label="Join game"
       class="w-full"
       type="submit"
+      :disabled="loading"
       @click="$emit('joinGame', { gameKey, playerName })"
     />
   </div>
@@ -30,15 +33,21 @@
 </template>
 
 <script>
-import { defineComponent, ref, watch } from "vue";
-export default defineComponent({
-  name: "GameFormBack",
-  props: {
-    playerName: String,
-    gameKey: String,
-  },
-  emits: ["joinGame", "toggleShowFront", "update:playerName", "update:gameKey"],
-});
+  import { defineComponent, ref, watch } from 'vue';
+  export default defineComponent({
+    name: 'GameFormBack',
+    props: {
+      playerName: String,
+      gameKey: String,
+      loading: Boolean,
+    },
+    emits: [
+      'joinGame',
+      'toggleShowFront',
+      'update:playerName',
+      'update:gameKey',
+    ],
+  });
 </script>
 
 <style></style>

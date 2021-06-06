@@ -44,8 +44,8 @@
     name: 'MiddleTable',
     components: { Card, CardStack, PlayerAvatar },
     setup() {
-      const { game, player } = useGame();
-      const { drawCard, disableCardActions } = useTable();
+      const { game, player, drawCard } = useGame();
+      const { disableCardActions } = useTable();
 
       return {
         game,
