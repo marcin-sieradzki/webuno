@@ -142,12 +142,12 @@
         );
       };
       const playCard = () => {
+        if (disabled.value || reversed.value) return;
+        if (!canBePlayed(card.value, playedCards.value)) return;
         if (type.value === CardTypeEnum.stack) {
           emit('drawCard');
           return;
         }
-        if (disabled.value || reversed.value) return;
-        if (!canBePlayed(card.value, playedCards.value)) return;
         emit('playCard', card.value);
       };
 
@@ -179,7 +179,6 @@
       });
 
       const buildTransform = () => {
-        //TODO: Strategy patttern
         if (type.value === CardTypeEnum.stack) {
           return '';
         }
