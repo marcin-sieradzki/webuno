@@ -142,7 +142,7 @@
         );
       };
       const playCard = () => {
-        if (disabled.value || reversed.value) return;
+        if (disabled.value) return;
         if (!canBePlayed(card.value, playedCards.value)) return;
         if (type.value === CardTypeEnum.stack) {
           emit('drawCard');
