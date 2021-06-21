@@ -143,11 +143,11 @@
       };
       const playCard = () => {
         if (disabled.value) return;
-        if (!canBePlayed(card.value, playedCards.value)) return;
         if (type.value === CardTypeEnum.stack) {
           emit('drawCard');
           return;
         }
+        if (!canBePlayed(card.value, playedCards.value)) return;
         emit('playCard', card.value);
       };
 
