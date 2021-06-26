@@ -1,7 +1,7 @@
-import { HubResponse } from './../Types';
+import { Card, HubResponse } from './../Types';
 import { useHubConnection } from './useHubConnection';
-import { ref, computed, Ref, reactive, toRefs, toRef } from 'vue';
-import { Game, Player, Card } from '@/Types';
+import { ref, computed, Ref } from 'vue';
+import { Game, Player } from '@/Types';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import { sharedRef } from '@/utils/shared/useSharedRef';
@@ -80,11 +80,11 @@ export const useGame = () => {
     currentTurn: computed(() => $game?.value?.currentPlayerTurn),
     playedCards: computed(() => $game?.value?.cardsPlayed || []),
     game: computed(() => $game.value),
-    setGame,
-    startGame,
     disconnectFromGame,
     refreshGame,
+    startGame,
     fetchGame,
+    setGame,
     loading,
     error,
   };

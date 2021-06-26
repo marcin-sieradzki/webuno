@@ -24,18 +24,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, toRefs } from 'vue';
-import useVuelidate from '@vuelidate/core';
-import { required, minLength } from '@vuelidate/validators';
+import { defineComponent, ref } from 'vue';
 
 import { useGame } from '@/composables/useGame';
 import { useJoinGame } from '@/composables/useJoinGame';
-
 import { useRouter } from 'vue-router';
+import { useHubConnection } from '@/composables/useHubConnection';
+
 import FlipCardForm from '@/components/Forms/FlipCardForm.vue';
 import GameFormFront from '@/components/Home/GameFormFront.vue';
 import GameFormBack from '@/components/Home/GameFormBack.vue';
-import { useHubConnection } from '@/composables/useHubConnection';
 
 export default defineComponent({
   name: 'Home',
@@ -80,13 +78,6 @@ export default defineComponent({
       });
     };
 
-    const rules = {
-      gameKey: { required },
-      playerName: { required, minLength: minLength(3) },
-    };
-
-    const v$ = useVuelidate(rules, { gameKey, playerName });
-
     return {
       gameKey,
       playerName,
@@ -95,7 +86,6 @@ export default defineComponent({
       isJoiningGame,
       joinGameError,
       isStartingGame,
-      v$,
     };
   },
 });

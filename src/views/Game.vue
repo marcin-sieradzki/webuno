@@ -15,23 +15,19 @@ import Chat from '@/components/Chat.vue';
 
 import { useHubConnection } from '@/composables/useHubConnection';
 import { useGame } from '@/composables/useGame';
-import { useChat } from '@/composables/useChat';
 import { useJoinGame } from '@/composables/useJoinGame';
-
-import { sharedRef, sharedMap } from '@/utils/shared/useSharedRef';
 import { useRoute } from 'vue-router';
-import { CardPlayedResponse, Game, Message, Player } from '@/Types';
+import { useGameListeners } from '@/composables/useGameListeners';
 
 export default defineComponent({
   name: 'Game',
   components: { GameBoard, Chat, GameWinnerDialog },
   setup() {
     const route = useRoute();
-    const { appendMessage } = useChat();
-    const { player, disconnectFromGame, setGame, game, players, refreshGame } = useGame();
+    const { player, disconnectFromGame, setGame, game, players } = useGame();
     const { joinGame, loading: isJoiningGame, error: joinGameError } = useJoinGame();
-    const { registerListener, connectToHub, isConnected, loading, error } = useHubConnection();
-
+    const { connectToHub, isConnected, loading, error } = useHubConnection();
+    const { registerGameListeners } = useGameListeners();
     const winner = computed(() => {
       const winnerId = game?.value?.winnerId;
       return winnerId ? game.value.players.find((player) => player.key == winnerId) : null;
@@ -60,30 +56,13 @@ export default defineComponent({
 
         setGame(joinedGame);
       }
-
-      registerListener('PlayerJoined', async (response: Player) => {
-        console.log('PlayerJoined');
-        await refreshGame(game.value);
-      });
-      registerListener('PlayerReconnected', async (response: Player) => {
-        console.log('PlayerReconnected', { response });
-        await refreshGame(game.value);
-      });
-
-      registerListener('MessageReceived', (data: Message) => {
-        console.log('MessageReceived', { data });
-        appendMessage(data);
-      });
-      registerListener('CardPlayed', async (data: CardPlayedResponse) => {
-        await refreshGame(game.value);
-      });
-      registerListener('CardDrew', async (data: Game) => {
-        await refreshGame(game.value);
-      });
+      registerGameListeners();
     });
+
     onBeforeUnmount(async () => {
       await disconnectFromGame();
     });
+
     return {
       game,
       disconnect,
@@ -92,8 +71,6 @@ export default defineComponent({
       winner,
       isJoiningGame,
       joinGameError,
-      sharedRef,
-      sharedMap,
       showWinnerModal: computed(() => {
         return winner.value?.key ? true : false;
       }),

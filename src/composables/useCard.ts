@@ -1,6 +1,7 @@
 import { Card, Game } from '@/Types';
 import { sharedRef } from '@/utils/shared/useSharedRef';
 import { Ref } from 'vue';
+import { useGame } from './useGame';
 import { useHubConnection } from './useHubConnection';
 
 export const useCard = () => {
