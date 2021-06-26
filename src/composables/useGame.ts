@@ -1,6 +1,6 @@
 import { Card, HubResponse } from './../Types';
 import { useHubConnection } from './useHubConnection';
-import { ref, computed, Ref } from 'vue';
+import { ref, computed, Ref, readonly } from 'vue';
 import { Game, Player } from '@/Types';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
@@ -15,6 +15,15 @@ export const useGame = () => {
   const loading: Ref<boolean> = sharedRef('useGame-loading', false);
   const error: Ref<UseGameErrors> = sharedRef('useGame-error', { startGame: null, refreshGame: null });
   const route = useRoute();
+
+  const setGame = (game: Game) => {
+    $game.value = game;
+  };
+
+  const winner = computed(() => {
+    const winnerId = $game.value?.winnerId;
+    return winnerId ? $game.value.players.find((player) => player.key == winnerId) : null;
+  });
 
   const startGame = async (playerName: string): Promise<Game> => {
     try {
@@ -51,10 +60,6 @@ export const useGame = () => {
     }
   };
 
-  const setGame = (game: Game) => {
-    $game.value = game;
-  };
-
   const disconnectFromGame = async () => {
     // try {
     //   await connection.value.invoke(
@@ -87,6 +92,7 @@ export const useGame = () => {
     setGame,
     loading,
     error,
+    winner: computed(() => winner.value),
   };
 };
 

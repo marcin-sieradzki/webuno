@@ -24,14 +24,10 @@ export default defineComponent({
   components: { GameBoard, Chat, GameWinnerDialog },
   setup() {
     const route = useRoute();
-    const { player, disconnectFromGame, setGame, game, players } = useGame();
+    const { player, disconnectFromGame, setGame, game, players, winner } = useGame();
     const { joinGame, loading: isJoiningGame, error: joinGameError } = useJoinGame();
     const { connectToHub, isConnected, loading, error } = useHubConnection();
     const { registerGameListeners } = useGameListeners();
-    const winner = computed(() => {
-      const winnerId = game?.value?.winnerId;
-      return winnerId ? game.value.players.find((player) => player.key == winnerId) : null;
-    });
 
     const disconnect = async () => {
       await disconnectFromGame();
@@ -72,7 +68,7 @@ export default defineComponent({
       isJoiningGame,
       joinGameError,
       showWinnerModal: computed(() => {
-        return winner.value?.key ? true : false;
+        return winner.value.key ? true : false;
       }),
     };
   },

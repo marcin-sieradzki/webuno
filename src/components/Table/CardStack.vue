@@ -12,15 +12,15 @@
 </template>
 
 <script>
-  import Card from '@/components/Card.vue';
-  import { defineComponent } from 'vue';
-  export default defineComponent({
-    name: 'CardStack',
-    components: {
-      Card,
-    },
-    props: {
-      disabled: Boolean,
-    },
-  });
+import Card from '@/components/Card.vue';
+import { defineComponent } from 'vue';
+export default defineComponent({
+  name: 'CardStack',
+  components: {
+    Card,
+  },
+  props: {
+    disabled: Boolean,
+  },
+});
 </script>

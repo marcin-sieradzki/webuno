@@ -1,16 +1,11 @@
 <template>
-  <Avatar
-    :label="nameFirstLetter"
-    size="large"
-    class="text-white transform"
-    :class="classObject"
-  />
+  <Avatar :label="nameFirstLetter" size="large" class="text-white transform" :class="classObject" />
 </template>
 
 <script>
-import { computed, defineComponent, toRefs } from "vue";
+import { computed, defineComponent, toRefs } from 'vue';
 export default defineComponent({
-  name: "PlayerAvatar",
+  name: 'PlayerAvatar',
   props: {
     playerName: {
       type: String,
@@ -18,7 +13,7 @@ export default defineComponent({
     },
     rotate: {
       type: String,
-      default: "rotate-0",
+      default: 'rotate-0',
     },
     active: Boolean,
   },
@@ -32,7 +27,7 @@ export default defineComponent({
     const classObject = computed(() => {
       return {
         [rotate.value]: true,
-        "border border-4 border-yellow-400 animate-pulse ": active.value,
+        'border border-4 border-yellow-400 animate-pulse ': active.value,
       };
     });
     return { nameFirstLetter, classObject };
