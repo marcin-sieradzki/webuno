@@ -1,30 +1,29 @@
-import { ref, computed } from "vue";
-import {
-  HubConnectionBuilder,
-  LogLevel,
-  HubConnection,
-} from "@microsoft/signalr";
+import { ref, computed } from 'vue';
+import { HubConnectionBuilder, LogLevel, HubConnection } from '@microsoft/signalr';
 
+const hubUrl = 'https://webuno-api.azurewebsites.net/gamehub';
 const connection = ref<HubConnection>(null);
-const hubUrl = "https://webuno-api.azurewebsites.net/gamehub";
+const loading = ref(false);
+const error = ref(null);
 
 export const useHubConnection = () => {
-  const isConnected = computed(() =>
-    connection?.value?.connectionId?.length ? true : false
-  );
+  const isConnected = computed(() => (connection.value?.connectionId?.length ? true : false));
 
   const buildHubConnection = () => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(hubUrl)
-      .configureLogging(LogLevel.Information)
-      .build();
-
+    const newConnection = new HubConnectionBuilder().withUrl(hubUrl).configureLogging(LogLevel.Information).build();
     connection.value = newConnection;
   };
 
   const connectToHub = async () => {
-    buildHubConnection();
-    await connection.value.start();
+    try {
+      loading.value = true;
+      buildHubConnection();
+      await connection.value.start();
+    } catch (e) {
+      error.value = e;
+    } finally {
+      loading.value = false;
+    }
   };
 
   const disconnectFromHub = async () => {
@@ -44,5 +43,7 @@ export const useHubConnection = () => {
     disconnectFromHub,
     registerListener,
     connection,
+    loading,
+    error,
   };
 };

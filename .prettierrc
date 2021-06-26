@@ -1,5 +1,9 @@
 {
-  "singleQuote": true,
+  "endOfLine": "lf",
   "semi": true,
-  "vueIndentScriptAndStyle": true
+  "singleQuote": true,
+  "arrowParens": "always",
+  "tabWidth": 2,
+  "bracketSpacing": true,
+  "printWidth": 120
 }

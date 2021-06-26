@@ -27,27 +27,20 @@
       @click="$emit('joinGame', { gameKey, playerName })"
     />
   </div>
-  <Button @click="$emit('toggleShowFront')" class="bottom-16 p-button-text"
-    >New game</Button
-  >
+  <Button @click="$emit('toggleShowFront')" class="bottom-16 p-button-text">New game</Button>
 </template>
 
 <script>
-  import { defineComponent, ref, watch } from 'vue';
-  export default defineComponent({
-    name: 'GameFormBack',
-    props: {
-      playerName: String,
-      gameKey: String,
-      loading: Boolean,
-    },
-    emits: [
-      'joinGame',
-      'toggleShowFront',
-      'update:playerName',
-      'update:gameKey',
-    ],
-  });
+import { defineComponent, ref, watch } from 'vue';
+export default defineComponent({
+  name: 'GameFormBack',
+  props: {
+    playerName: String,
+    gameKey: String,
+    loading: Boolean,
+  },
+  emits: ['joinGame', 'toggleShowFront', 'update:playerName', 'update:gameKey'],
+});
 </script>
 
 <style></style>

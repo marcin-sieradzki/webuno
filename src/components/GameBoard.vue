@@ -9,7 +9,7 @@
       shadow-2xl
     "
   >
-    <MiddleTable></MiddleTable>
+    <GameTable></GameTable>
     <PlayerSeats></PlayerSeats>
   </section>
 </template>
@@ -20,12 +20,12 @@
   import Card from '@/components/Card.vue';
   import CardStack from '@/components/Table/CardStack.vue';
   import PlayerAvatar from '@/components/Table/PlayerAvatar.vue';
-  import MiddleTable from '@/components/Table/MiddleTable.vue';
+  import GameTable from '@/components/Table/GameTable.vue';
   import PlayerSeats from '@/components/Table/PlayerSeats.vue';
 
   export default defineComponent({
-    name: 'Table',
-    components: { Card, CardStack, PlayerAvatar, MiddleTable, PlayerSeats },
+    name: 'GameBoard',
+    components: { Card, CardStack, PlayerAvatar, GameTable, PlayerSeats },
   });
 </script>
 

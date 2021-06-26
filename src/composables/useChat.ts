@@ -1,8 +1,7 @@
-import { useHubConnection } from "./useHubConnection";
-import { useGame } from "./useGame";
+import { useHubConnection } from './useHubConnection';
 
-import { computed, ref } from "vue";
-import { Message } from "@/Types";
+import { computed, ref } from 'vue';
+import { Message } from '@/Types';
 
 const chatMessages = ref<Message[]>([]);
 const { connection } = useHubConnection();
@@ -15,7 +14,7 @@ export const useChat = () => {
   ) => {
     try {
       const messageSent = await connection.value.invoke(
-        "SendMessage",
+        'SendMessage',
         message,
         playerName,
         gameKey

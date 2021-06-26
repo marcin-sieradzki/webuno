@@ -1,21 +1,12 @@
 <template>
-  <section
-    class="
-      h-screen
-      w-screen
-      flex flex-col
-      justify-center
-      items-center
-      bg-surface-b
-    "
-  >
+  <section class="h-screen w-screen flex flex-col justify-center items-center bg-surface-b">
     <h1 class="text-text-color text-4xl font-semibold">Webuno</h1>
     <FlipCardForm>
       <template #front="{ toggleShowFront }">
         <GameFormFront
           v-model="playerName"
           @toggleShowFront="toggleShowFront"
-          @startGame="startGame"
+          @startGame="onStartGame"
           :loading="isStartingGame"
         ></GameFormFront>
       </template>
@@ -24,7 +15,7 @@
           v-model:playerName="playerName"
           v-model:gameKey="gameKey"
           @toggleShowFront="toggleShowFront"
-          @joinGame="joinGame(gameKey, playerName)"
+          @joinGame="onJoinGame(gameKey, playerName)"
           :loading="isJoiningGame"
         ></GameFormBack>
       </template>
@@ -33,75 +24,81 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, ref, toRefs } from 'vue';
-  import useVuelidate from '@vuelidate/core';
-  import { required, minLength } from '@vuelidate/validators';
+import { defineComponent, reactive, ref, toRefs } from 'vue';
+import useVuelidate from '@vuelidate/core';
+import { required, minLength } from '@vuelidate/validators';
 
-  import { useGame } from '@/composables/useGame';
-  import { useRouter } from 'vue-router';
-  import FlipCardForm from '@/components/Forms/FlipCardForm.vue';
-  import GameFormFront from '@/components/Home/GameFormFront.vue';
-  import GameFormBack from '@/components/Home/GameFormBack.vue';
+import { useGame } from '@/composables/useGame';
+import { useJoinGame } from '@/composables/useJoinGame';
 
-  export default defineComponent({
-    name: 'Home',
-    components: {
-      FlipCardForm,
-      GameFormFront,
-      GameFormBack,
-    },
-    setup() {
-      const gameKey = ref('');
-      const playerName = ref('');
+import { useRouter } from 'vue-router';
+import FlipCardForm from '@/components/Forms/FlipCardForm.vue';
+import GameFormFront from '@/components/Home/GameFormFront.vue';
+import GameFormBack from '@/components/Home/GameFormBack.vue';
+import { useHubConnection } from '@/composables/useHubConnection';
 
-      const router = useRouter();
-      const {
-        startGame: useStartGame,
-        game,
-        joinGame: useJoinGame,
-        isJoiningGame,
-        joinGameError,
-        startGameError,
-        isStartingGame,
-      } = useGame();
+export default defineComponent({
+  name: 'Home',
+  components: {
+    FlipCardForm,
+    GameFormFront,
+    GameFormBack,
+  },
+  setup() {
+    const gameKey = ref('');
+    const playerName = ref('');
 
-      const startGame = async () => {
-        await useStartGame(playerName.value);
-        navigateToGame(game.value.key, playerName.value);
-      };
+    const router = useRouter();
+    const { startGame, game, setGame, error, loading: isStartingGame } = useGame();
+    const { joinGame, loading: isJoiningGame, error: joinGameError } = useJoinGame();
+    const { connectToHub, isConnected } = useHubConnection();
 
-      const joinGame = async (gameKey: string, playerName: string) => {
-        await useJoinGame({ gameKey, playerName });
-        navigateToGame(gameKey, playerName);
-      };
+    const onStartGame = async () => {
+      if (!isConnected.value) {
+        await connectToHub();
+      }
 
-      const navigateToGame = (gameKey: string, playerName: string) => {
-        router.push({
-          name: 'Game',
-          params: { gameKey, playerName },
-        });
-      };
+      const startedGame = await startGame(playerName.value);
+      setGame(startedGame);
+      navigateToGame(game.value.key, playerName.value);
+    };
 
-      const rules = {
-        gameKey: { required },
-        playerName: { required, minLength: minLength(3) },
-      };
+    const onJoinGame = async (gameKey: string, playerName: string) => {
+      if (!isConnected.value) {
+        await connectToHub();
+      }
 
-      const v$ = useVuelidate(rules, { gameKey, playerName });
+      const joinedGame = await joinGame({ gameKey, playerName });
+      setGame(joinedGame);
+      navigateToGame(gameKey, playerName);
+    };
 
-      return {
-        gameKey,
-        playerName,
-        startGame,
-        joinGame,
-        isJoiningGame,
-        joinGameError,
-        startGameError,
-        isStartingGame,
-        v$,
-      };
-    },
-  });
+    const navigateToGame = (gameKey: string, playerName: string) => {
+      router.push({
+        name: 'Game',
+        params: { gameKey, playerName },
+      });
+    };
+
+    const rules = {
+      gameKey: { required },
+      playerName: { required, minLength: minLength(3) },
+    };
+
+    const v$ = useVuelidate(rules, { gameKey, playerName });
+
+    return {
+      gameKey,
+      playerName,
+      onStartGame,
+      onJoinGame,
+      isJoiningGame,
+      joinGameError,
+      isStartingGame,
+      v$,
+    };
+  },
+});
 </script>
 
 <style lang="scss"></style>

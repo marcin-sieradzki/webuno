@@ -1,141 +1,58 @@
-import { useFetcher } from '@/composables/useFetcher';
 import { HubResponse } from './../Types';
 import { useHubConnection } from './useHubConnection';
 import { ref, computed, Ref, reactive, toRefs, toRef } from 'vue';
 import { Game, Player, Card } from '@/Types';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
+import { sharedRef } from '@/utils/shared/useSharedRef';
 
-const { isConnected, buildHubConnection, connectToHub, connection } =
-  useHubConnection();
+const { connection } = useHubConnection();
 
 const apiUrl = 'https://webuno-api.azurewebsites.net/api';
-const game = ref<Game | null>(null);
-const joinGameState = reactive({ isJoiningGame: false, joinGameError: null });
-const drawCardState = reactive({ isDrawingCard: false, drawCardError: null });
-const playCardState = reactive({ isPlayingCard: false, playCardError: null });
-const refreshGameState = reactive({
-  isRefreshingGame: false,
-  refreshGameError: null,
-});
-const startGameState = reactive({
-  isStartingGame: false,
-  startGameError: null,
-});
-
-interface PlayCardParams {
-  gameKey: string;
-  playerName: string;
-  card: Card;
-}
-interface DrawCardParams {
-  playerName: string;
-  game: Game;
-}
-interface JoinGameParams {
-  gameKey: string;
-  playerName: string;
-}
+const $game = ref<Game | null>(null);
 
 export const useGame = () => {
+  const loading: Ref<boolean> = sharedRef('useGame-loading', false);
+  const error: Ref<UseGameErrors> = sharedRef('useGame-error', { startGame: null, refreshGame: null });
   const route = useRoute();
-  const startGame = async (playerName: string): Promise<boolean> => {
+
+  const startGame = async (playerName: string): Promise<Game> => {
     try {
-      startGameState.isStartingGame = true;
-      if (!isConnected.value) {
-        buildHubConnection();
-        await connectToHub();
-      }
-
-      const newGame: Game = await connection.value.invoke(
-        'StartGame',
-        playerName
-      );
-      updateGameData(game, newGame);
-
-      return true;
+      loading.value = true;
+      const newGame: Game = await connection.value.invoke('StartGame', playerName);
+      return newGame;
     } catch (e) {
-      startGameState.startGameError = true;
+      error.value.startGame = e;
       throw new Error(e);
     } finally {
-      startGameState.isStartingGame = false;
-    }
-  };
-  async function joinGame({ gameKey, playerName }: JoinGameParams) {
-    try {
-      joinGameState.isJoiningGame = true;
-      if (!isConnected.value) {
-        buildHubConnection();
-        await connectToHub();
-      }
-      const joinedGame: Game = await connection.value.invoke(
-        'JoinGame',
-        gameKey,
-        playerName
-      );
-      updateGameData(game, joinedGame);
-      return joinedGame;
-    } catch (e) {
-      joinGameState.joinGameError = e;
-    } finally {
-      joinGameState.isJoiningGame = false;
-    }
-  }
-
-  const playCard = async ({ gameKey, playerName, card }: PlayCardParams) => {
-    playCardState.isPlayingCard = true;
-    try {
-      const playedCard = await connection.value.invoke(
-        'PlayCard',
-        gameKey,
-        playerName,
-        card
-      );
-      return playedCard;
-    } catch (e) {
-      playCardState.playCardError = e;
-    } finally {
-      playCardState.isPlayingCard = false;
-    }
-  };
-  const drawCard = async ({ playerName, game }: DrawCardParams) => {
-    drawCardState.isDrawingCard = true;
-    try {
-      const drawnCard = await connection.value.invoke(
-        'DrawRandomCard',
-        playerName,
-        game
-      );
-      return drawnCard;
-    } catch (e) {
-      drawCardState.drawCardError = e;
-    } finally {
-      drawCardState.isDrawingCard = false;
+      loading.value = false;
     }
   };
 
   const fetchGame = async (key): Promise<Game> => {
     try {
-      const fetchedGame: HubResponse<Game> = await axios.get(
-        `${apiUrl}/game/${key}`
-      );
+      const fetchedGame: HubResponse<Game> = await axios.get(`${apiUrl}/game/${key}`);
       return fetchedGame.data;
     } catch (e) {
       throw new Error(e);
     }
   };
 
-  const refreshGame = async (): Promise<void | Error> => {
-    refreshGameState.isRefreshingGame = true;
+  const refreshGame = async (game: Game): Promise<void | Error> => {
+    loading.value = true;
     try {
-      const fetchedGame = await fetchGame(game.value.key);
-      game.value = fetchedGame;
+      const fetchedGame = await fetchGame(game.key);
+      $game.value = fetchedGame;
     } catch (e) {
-      refreshGameState.refreshGameError = e;
+      error.value.fetchGame = e;
       throw new Error(e);
     } finally {
-      refreshGameState.isRefreshingGame = false;
+      loading.value = false;
     }
+  };
+
+  const setGame = (game: Game) => {
+    $game.value = game;
   };
 
   const disconnectFromGame = async () => {
@@ -151,33 +68,29 @@ export const useGame = () => {
     // }
   };
 
-  function updateGameData(game: Ref<Game>, newGame: Game) {
-    game.value = newGame;
-  }
   return {
     player: computed(() =>
-      game.value?.players?.find(
-        (player: Player) => player.name === route?.params?.playerName.toString()
-      )
+      $game.value?.players?.find((player: Player) => player.name === route?.params?.playerName.toString())
     ),
     players: computed(() =>
-      game?.value?.players?.sort((currentPlayer, nextPlayer) => {
+      $game?.value?.players?.sort((currentPlayer, nextPlayer) => {
         return currentPlayer.sitIndex - nextPlayer.sitIndex;
       })
     ),
-    game: computed(() => game.value),
-    currentTurn: computed(() => game?.value?.currentPlayerTurn),
-    playedCards: computed(() => game?.value?.cardsPlayed || []),
+    currentTurn: computed(() => $game?.value?.currentPlayerTurn),
+    playedCards: computed(() => $game?.value?.cardsPlayed || []),
+    game: computed(() => $game.value),
+    setGame,
     startGame,
     disconnectFromGame,
     refreshGame,
     fetchGame,
-    drawCard,
-    playCard,
-    joinGame,
-    ...toRefs(drawCardState),
-    ...toRefs(playCardState),
-    ...toRefs(joinGameState),
-    ...toRefs(startGameState),
+    loading,
+    error,
   };
 };
+
+interface UseGameErrors {
+  startGame: Error;
+  fetchGame: Error;
+}
