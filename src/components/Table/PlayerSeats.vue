@@ -1,7 +1,12 @@
 <template>
   <div v-for="player in players" :key="player.key" class="flex relative" :class="getCardsPosition(player)">
     <div v-if="player.playerCards" class="relative">
-      <PlayerAvatar class="absolute right-0" :playerName="player.name" :active="currentTurn === player.name" />
+      <PlayerAvatar
+        class="absolute right-0"
+        :playerName="player.name"
+        :active="currentTurn === player.name"
+        :rotate="getAvatarRotation(player)"
+      />
       <Card
         :reversed="shouldReverseCard(player, gamePlayer.name)"
         :data-sit-index="player.sitIndex"
@@ -40,6 +45,8 @@ export default defineComponent({
     const shouldReverseCard = (playerToCheck: Player, playerName: string) => {
       return playerToCheck.name !== playerName;
     };
+
+    const getAvatarRotation = (player: Player) => {};
 
     const getCardsPosition = (cardsOwner: Player) => {
       //TODO: Make it in a more clever way? :D
@@ -103,6 +110,7 @@ export default defineComponent({
       playCard,
       disableCardActions,
       isPlayerTurn,
+      getAvatarRotation,
     };
   },
 });

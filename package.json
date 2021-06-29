@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "test": "npx cypress open-ct"
   },
   "dependencies": {
     "@microsoft/signalr": "^5.0.5",
@@ -18,6 +19,9 @@
     "vue-router": "^4.0.6"
   },
   "devDependencies": {
+    "cypress": "^7.6.0",
+    "@cypress/vite-dev-server": "^2.0.1",
+    "@cypress/vue": "^3.0.0-beta.3",
     "@tailwindcss/aspect-ratio": "^0.2.0",
     "@tailwindcss/forms": "^0.3.2",
     "@tailwindcss/line-clamp": "^0.2.0",
