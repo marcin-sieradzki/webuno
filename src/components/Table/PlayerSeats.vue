@@ -7,27 +7,29 @@
         :active="currentTurn === player.name"
         :rotate="getAvatarRotation(player)"
       />
-      <Card
-        :reversed="shouldReverseCard(player, gamePlayer.name)"
-        :data-sit-index="player.sitIndex"
-        v-for="card in player.playerCards"
-        :key="card.key"
-        :card="card"
-        :cards="player.playerCards"
-        @playCard="playCard({ gameKey: game.key, playerName: player.name, card })"
-        :disabled="disableCardActions"
-        class="bottom-2"
-      ></Card>
+      <template v-for="card in player.playerCards" :key="card.key">
+        <Card
+          class="bottom-2"
+          translateLeft
+          absolute
+          popupOnHover
+          :reversed="!isPlayerCard(player.name, gamePlayer.name)"
+          :card="card"
+          :allowInteraction="!disableCardActions && isPlayerCard(player.name, gamePlayer.name)"
+          :indexInStack="getCardIndex(card.key, player.playerCards)"
+          @cardClicked="playCard({ gameKey: game.key, playerName: player.name, card })"
+        ></Card>
+      </template>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, Ref } from 'vue';
 import { useGame } from '@/composables/useGame';
 import { useGameBoard } from '@/composables/useGameBoard';
 import { useCard } from '@/composables/useCard';
-import { Player } from '@/Types';
+import { Player, Card as CardType } from '@/Types';
 
 import Card from '@/components/Card.vue';
 import CardStack from '@/components/Table/CardStack.vue';
@@ -38,18 +40,23 @@ export default defineComponent({
   name: 'PlayerSeats',
   components: { Card, CardStack, PlayerAvatar, GameTable },
   setup() {
-    const { players, player, game, currentTurn } = useGame();
+    const { players, player, game, currentTurn, playedCards } = useGame();
     const { playCard } = useCard();
     const { disableCardActions, isPlayerTurn } = useGameBoard();
 
-    const shouldReverseCard = (playerToCheck: Player, playerName: string) => {
-      return playerToCheck.name !== playerName;
+    const isPlayerCard = (nameToCheck: string, playerName: string) => {
+      return nameToCheck === playerName;
     };
 
     const getAvatarRotation = (player: Player) => {};
 
+    const getCardIndex = (key: string, cards: Ref<CardType[]>) => {
+      const cardsCopy = JSON.parse(JSON.stringify(cards));
+      return cardsCopy.findIndex((card) => card.key == key) || 0;
+    };
+
     const getCardsPosition = (cardsOwner: Player) => {
-      //TODO: Make it in a more clever way? :D
+      //TODO: Make it in a more clever way :)
       if (cardsOwner.name === player.value.name) {
         return 'col-start-2 row-start-3';
       }
@@ -105,12 +112,14 @@ export default defineComponent({
       gamePlayer: player,
       getCardsPosition,
       game,
-      shouldReverseCard,
+      isPlayerCard,
       currentTurn,
       playCard,
       disableCardActions,
       isPlayerTurn,
       getAvatarRotation,
+      playedCards,
+      getCardIndex,
     };
   },
 });

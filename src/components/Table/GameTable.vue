@@ -20,7 +20,14 @@
       class="self-center"
     />
     <div class="relative h-full w-full flex items-center justify-center">
-      <Card v-for="card in game.cardsPlayed" :key="card.key" :card="card" randomlyRotated disabled></Card>
+      <Card
+        v-for="card in game.cardsPlayed"
+        :key="card.key"
+        :card="card"
+        randomlyRotated
+        absolute
+        :allowInteraction="false"
+      ></Card>
     </div>
   </div>
 </template>

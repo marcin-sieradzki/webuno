@@ -1,10 +1,11 @@
 <template>
   <div class="card-stack">
     <Card
-      :disabled="disabled"
+      data-test="CardStack-Card"
+      :allowInteraction="!disabled"
       reversed
       type="stack"
-      @drawCard="$emit('drawCard')"
+      @cardClicked="$emit('drawCard')"
       class="z-10"
       :absolute="false"
     ></Card>

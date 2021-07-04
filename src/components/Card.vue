@@ -1,12 +1,14 @@
 <template>
   <div
+    data-test="Card"
     class="card h-52 w-36 min-w-36 max-w-36 bg-gray-50 rounded-lg border-4 shadow-md"
-    @click="playCard"
+    @click="cardClicked"
     :class="[classObject, cardColor]"
     :style="styleObject"
   >
     <div
       v-if="!reversed"
+      data-test="Card-Front"
       class="
         w-full
         h-full
@@ -26,6 +28,7 @@
       <span class="transform rotate-negative-18 absolute bottom-5 -right-5"> {{ cardSymbol }}</span>
     </div>
     <div
+      data-test="Card-Back"
       class="w-full h-full border-4 rounded-[50%] transform rotate-18 flex items-center justify-center"
       v-if="reversed"
     >
@@ -35,18 +38,13 @@
 </template>
 
 <script lang="ts">
-import { Card, CardType, CardTypeEnum } from '@/Types';
+import { Card } from '@/Types';
 import { computed, defineComponent, PropType, toRefs } from 'vue';
-import { useGame } from '@/composables/useGame';
 export default defineComponent({
   name: 'Card',
   props: {
     card: {
       type: Object as PropType<Card>,
-    },
-    cards: {
-      type: Array as PropType<Card[]>,
-      default: () => [],
     },
     randomlyRotated: {
       type: Boolean,
@@ -56,22 +54,36 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    disabled: {
+    absolute: {
       type: Boolean,
       default: false,
     },
-    absolute: {
+    popupOnHover: {
+      type: Boolean,
+      default: false,
+    },
+    indexInStack: {
+      type: Number,
+      default: 0,
+    },
+    translateLeft: {
+      type: Boolean,
+      default: false,
+    },
+    allowInteraction: {
       type: Boolean,
       default: true,
     },
-    type: {
-      type: String as PropType<CardType>,
-      default: 'hand',
-    },
   },
   setup(props, { emit }) {
-    const { card, randomlyRotated, reversed, disabled, cards, absolute, type } = toRefs(props);
-    const { playedCards } = useGame();
+    const { card, randomlyRotated, reversed, absolute, popupOnHover, indexInStack, translateLeft, allowInteraction } =
+      toRefs(props);
+
+    const cardClicked = () => {
+      if (!allowInteraction.value) return;
+      emit('cardClicked', card);
+    };
+
     const cardSymbol = computed(() => {
       return card?.value?.symbol.length < 3 ? card.value.symbol : card.value.symbol.charAt(0).toUpperCase();
     });
@@ -94,40 +106,19 @@ export default defineComponent({
       }
     });
 
-    const canBePlayed = (card: Card, playedCards: Card[]) => {
-      const latestPlayedCard = playedCards[playedCards.length - 1];
-      return (
-        latestPlayedCard.color == card.color ||
-        latestPlayedCard.color == 'inherit' ||
-        card.color == 'inherit' ||
-        latestPlayedCard.symbol == card.symbol
-      );
-    };
-    const playCard = () => {
-      if (disabled.value) return;
-      if (type.value === CardTypeEnum.stack) {
-        emit('drawCard');
-        return;
-      }
-      if (!canBePlayed(card.value, playedCards.value)) return;
-      emit('playCard', card.value);
-    };
-
     const classObject = computed(() => {
       return {
-        'cursor-pointer': (!reversed.value && !disabled.value) || type.value === CardTypeEnum.stack,
-        'pointer-events-none': (reversed.value && type.value !== CardTypeEnum.stack) || disabled.value, //change
-        'hover:z-10': type.value === CardTypeEnum.hand,
-        'hover:bottom-7': type.value === CardTypeEnum.hand,
+        'cursor-pointer': allowInteraction.value,
+        'pointer-events-none': !allowInteraction.value,
+        'hover:z-10': popupOnHover.value,
+        'hover:bottom-7': popupOnHover.value,
         absolute: absolute.value,
       };
     });
 
     const styleObject = computed(() => {
       let styles = {};
-      if (randomlyRotated.value) {
-        styles = {};
-      }
+
       styles = {
         ...styles,
         transform: buildTransform(),
@@ -137,14 +128,13 @@ export default defineComponent({
     });
 
     const buildTransform = () => {
-      if (type.value === CardTypeEnum.stack) {
-        return '';
-      }
       if (randomlyRotated.value) {
         return randomRotation.value;
       }
-      const cardIndex = cards.value.findIndex((c) => c.key === card.value.key);
-      return `translate(${cardIndex * 2.5}rem)`;
+      if (translateLeft.value) {
+        return `translate(${indexInStack.value * 2.5}rem)`;
+      }
+      return '';
     };
 
     const randomRotation = computed(() => {
@@ -159,7 +149,7 @@ export default defineComponent({
       return `${getRandomIntInclusive(-10, 10)}px,${getRandomIntInclusive(-10, 10)}px`;
     };
 
-    const getRandomIntInclusive = (min, max) => {
+    const getRandomIntInclusive = (min: number, max: number) => {
       min = Math.ceil(min);
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -167,7 +157,7 @@ export default defineComponent({
 
     return {
       cardSymbol,
-      playCard,
+      cardClicked,
       styleObject,
       classObject,
       cardColor,
