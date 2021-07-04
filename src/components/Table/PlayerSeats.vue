@@ -13,6 +13,7 @@
           translateLeft
           absolute
           popupOnHover
+          :test="display(card)"
           :reversed="!isPlayerCard(player.name, gamePlayer.name)"
           :card="card"
           :allowInteraction="!disableCardActions && isPlayerCard(player.name, gamePlayer.name)"
@@ -25,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref } from 'vue';
+import { defineComponent, Ref, unref } from 'vue';
 import { useGame } from '@/composables/useGame';
 import { useGameBoard } from '@/composables/useGameBoard';
 import { useCard } from '@/composables/useCard';
@@ -53,6 +54,10 @@ export default defineComponent({
     const getCardIndex = (key: string, cards: Ref<CardType[]>) => {
       const cardsCopy = JSON.parse(JSON.stringify(cards));
       return cardsCopy.findIndex((card) => card.key == key) || 0;
+    };
+    const display = (card) => {
+      const copy = unref(card);
+      console.log(card.key);
     };
 
     const getCardsPosition = (cardsOwner: Player) => {
@@ -120,6 +125,7 @@ export default defineComponent({
       getAvatarRotation,
       playedCards,
       getCardIndex,
+      display,
     };
   },
 });

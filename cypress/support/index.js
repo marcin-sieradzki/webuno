@@ -14,11 +14,14 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import './commands';
 import '@/tailwind.css';
+import 'primevue/resources/themes/arya-green/theme.css';
+import 'primevue/resources/primevue.min.css';
+import 'primeicons/primeicons.css';
 
 Cypress.Commands.add('vue', () => {
-  return cy.wrap(Cypress.vueWrapper)
-})
+  return cy.wrap(Cypress.vueWrapper);
+});
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

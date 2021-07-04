@@ -1,6 +1,6 @@
-import { Card, HubResponse } from './../Types';
+import { HubResponse } from './../Types';
 import { useHubConnection } from './useHubConnection';
-import { ref, computed, Ref, readonly } from 'vue';
+import { ref, computed, Ref } from 'vue';
 import { Game, Player } from '@/Types';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
@@ -16,15 +16,6 @@ export const useGame = () => {
   const error: Ref<UseGameErrors> = sharedRef('useGame-error', { startGame: null, refreshGame: null });
   const route = useRoute();
 
-  const setGame = (game: Game) => {
-    $game.value = game;
-  };
-
-  const winner = computed(() => {
-    const winnerId = $game.value?.winnerId;
-    return winnerId ? $game.value.players.find((player) => player.key == winnerId) : null;
-  });
-
   const startGame = async (playerName: string): Promise<Game> => {
     try {
       loading.value = true;
@@ -35,15 +26,6 @@ export const useGame = () => {
       throw new Error(e);
     } finally {
       loading.value = false;
-    }
-  };
-
-  const fetchGame = async (key): Promise<Game> => {
-    try {
-      const fetchedGame: HubResponse<Game> = await axios.get(`${apiUrl}/game/${key}`);
-      return fetchedGame.data;
-    } catch (e) {
-      throw new Error(e);
     }
   };
 
@@ -59,6 +41,23 @@ export const useGame = () => {
       loading.value = false;
     }
   };
+
+  const fetchGame = async (key: string): Promise<Game> => {
+    try {
+      const fetchedGame: HubResponse<Game> = await axios.get(`${apiUrl}/game/${key}`);
+      return fetchedGame.data;
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+  const setGame = (game: Game) => {
+    $game.value = game;
+  };
+
+  const winner = computed(() => {
+    const winnerId = $game.value?.winnerId;
+    return winnerId ? $game.value.players.find((player) => player.key == winnerId) : null;
+  });
 
   const disconnectFromGame = async () => {
     // try {

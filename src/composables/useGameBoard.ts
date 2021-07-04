@@ -5,6 +5,7 @@ import { useCard } from './useCard';
 export const useGameBoard = () => {
   const { player, currentTurn } = useGame();
   const { loading: isUsingCard } = useCard();
+
   const isPlayerTurn = computed(() => {
     return currentTurn.value === player?.value?.name;
   });

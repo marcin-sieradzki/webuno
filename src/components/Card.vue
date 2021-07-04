@@ -2,7 +2,7 @@
   <div
     data-test="Card"
     class="card h-52 w-36 min-w-36 max-w-36 bg-gray-50 rounded-lg border-4 shadow-md"
-    @click="cardClicked"
+    @click="cardClicked(card)"
     :class="[classObject, cardColor]"
     :style="styleObject"
   >
@@ -23,9 +23,11 @@
         font-bold
       "
     >
-      <span class="transform rotate-negative-18 text-5xl"> {{ cardSymbol }}</span>
-      <span class="transform rotate-negative-18 absolute top-5 -left-5"> {{ cardSymbol }}</span>
-      <span class="transform rotate-negative-18 absolute bottom-5 -right-5"> {{ cardSymbol }}</span>
+      <span class="transform rotate-negative-18 text-5xl" data-test="Card-Symbol"> {{ cardSymbol }}</span>
+      <span class="transform rotate-negative-18 absolute top-5 -left-5" data-test="Card-Symbol"> {{ cardSymbol }}</span>
+      <span class="transform rotate-negative-18 absolute bottom-5 -right-5" data-test="Card-Symbol">
+        {{ cardSymbol }}</span
+      >
     </div>
     <div
       data-test="Card-Back"
@@ -38,13 +40,15 @@
 </template>
 
 <script lang="ts">
+import { Ref, unref } from 'vue';
 import { Card } from '@/Types';
 import { computed, defineComponent, PropType, toRefs } from 'vue';
+import { getRandomNumber } from '@/utils/shared/numberUtils';
 export default defineComponent({
   name: 'Card',
   props: {
     card: {
-      type: Object as PropType<Card>,
+      type: Object as PropType<Ref<Card>>,
     },
     randomlyRotated: {
       type: Boolean,
@@ -79,9 +83,9 @@ export default defineComponent({
     const { card, randomlyRotated, reversed, absolute, popupOnHover, indexInStack, translateLeft, allowInteraction } =
       toRefs(props);
 
-    const cardClicked = () => {
+    const cardClicked = (clickedCard: Ref<Card>) => {
       if (!allowInteraction.value) return;
-      emit('cardClicked', card);
+      emit('cardClicked', unref(clickedCard));
     };
 
     const cardSymbol = computed(() => {
@@ -117,14 +121,10 @@ export default defineComponent({
     });
 
     const styleObject = computed(() => {
-      let styles = {};
-
-      styles = {
-        ...styles,
+      return {
         transform: buildTransform(),
         transformOrigin: randomlyRotated.value ? 'default' : 'center',
       };
-      return styles;
     });
 
     const buildTransform = () => {
@@ -142,17 +142,11 @@ export default defineComponent({
     });
 
     const getRandomRotation = () => {
-      return `${getRandomIntInclusive(-60, 60)}deg`;
+      return `${getRandomNumber(-60, 60)}deg`;
     };
 
     const getRandomTranslateValues = () => {
-      return `${getRandomIntInclusive(-10, 10)}px,${getRandomIntInclusive(-10, 10)}px`;
-    };
-
-    const getRandomIntInclusive = (min: number, max: number) => {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+      return `${getRandomNumber(-10, 10)}px,${getRandomNumber(-10, 10)}px`;
     };
 
     return {
