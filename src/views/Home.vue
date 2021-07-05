@@ -1,25 +1,27 @@
 <template>
-  <section class="h-screen w-screen flex flex-col justify-center items-center bg-surface-b">
-    <h1 class="text-text-color text-4xl font-semibold">Webuno</h1>
-    <FlipCardForm>
-      <template #front="{ toggleShowFront }">
-        <GameFormFront
-          v-model="playerName"
-          @toggleShowFront="toggleShowFront"
-          @startGame="onStartGame"
-          :loading="isStartingGame"
-        ></GameFormFront>
-      </template>
-      <template #back="{ toggleShowFront }">
-        <GameFormBack
-          v-model:playerName="playerName"
-          v-model:gameKey="gameKey"
-          @toggleShowFront="toggleShowFront"
-          @joinGame="onJoinGame(gameKey, playerName)"
-          :loading="isJoiningGame"
-        ></GameFormBack>
-      </template>
-    </FlipCardForm>
+  <section class="home h-screen w-screen flex flex-col justify-center items-center">
+    <div>
+      <h1 class="text-white text-4xl font-semibold text-center">Webuno</h1>
+      <FlipCardForm>
+        <template #front="{ toggleShowFront }">
+          <GameFormFront
+            v-model="playerName"
+            @toggleShowFront="toggleShowFront"
+            @startGame="onStartGame"
+            :loading="isStartingGame"
+          ></GameFormFront>
+        </template>
+        <template #back="{ toggleShowFront }">
+          <GameFormBack
+            v-model:playerName="playerName"
+            v-model:gameKey="gameKey"
+            @toggleShowFront="toggleShowFront"
+            @joinGame="onJoinGame(gameKey, playerName)"
+            :loading="isJoiningGame"
+          ></GameFormBack>
+        </template>
+      </FlipCardForm>
+    </div>
   </section>
 </template>
 
@@ -91,4 +93,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.home {
+  background: radial-gradient(var(--blue-500), var(--surface-100));
+}
+</style>

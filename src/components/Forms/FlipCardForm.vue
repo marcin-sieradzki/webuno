@@ -1,34 +1,25 @@
 <template>
-  <div
-    class="form-scene h-full w-full flex flex-col justify-center items-center"
-  >
+  <div class="form-scene h-full w-full flex flex-col justify-center items-center">
     <form
-      class="
-        flex flex-col
-        bg-surface-100
-        h-1/2
-        w-72
-        rounded-xl
-        border-4 border-green-400
-        relative
-      "
+      class="flex flex-col h-120 w-80 rounded-xl border-4 border-white bg-green-400 relative shadow-md"
       :class="{ 'is-flipped': !showFront }"
       @submit.prevent
     >
-      <section class="absolute h-full w-full p-6 face" v-if="showFront">
+      <div class="w-full h-full border-4 rounded-[50%] transform rotate-12 absolute pointer-events-none"></div>
+      <div class="absolute h-full w-full p-6 face" v-if="showFront">
         <slot name="front" v-bind:toggleShowFront="toggleShowFront"></slot>
-      </section>
-      <section class="absolute h-full w-full p-6 face back" v-if="!showFront">
+      </div>
+      <div class="absolute h-full w-full p-6 face back" v-if="!showFront">
         <slot name="back" v-bind:toggleShowFront="toggleShowFront"></slot>
-      </section>
+      </div>
     </form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue';
 export default defineComponent({
-  name: "FlipCardForm",
+  name: 'FlipCardForm',
   setup() {
     const showFront = ref(true);
     const toggleShowFront = () => {

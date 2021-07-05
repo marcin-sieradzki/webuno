@@ -94,11 +94,11 @@ export default defineComponent({
 
     const cardColor = computed(() => {
       if (reversed.value) {
-        return 'bg-red-900';
+        return 'bg-red-500';
       }
       switch (card.value.color) {
         case 'red':
-          return 'bg-red-900';
+          return 'bg-red-500';
         case 'yellow':
           return 'bg-yellow-400';
         case 'green':

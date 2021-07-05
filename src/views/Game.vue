@@ -1,7 +1,7 @@
 <template>
   <div v-if="game && game.players.length" class="game h-screen max-h-full w-full overflow-hidden relative">
     <GameBoard />
-    <Chat />
+    <!-- <Chat /> -->
     <GameWinnerDialog v-if="winner" :winner="winner" />
   </div>
 </template>
@@ -78,5 +78,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .game {
   perspective: 80em;
+  background: radial-gradient(var(--blue-500), var(--surface-300));
 }
 </style>

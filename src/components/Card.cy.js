@@ -1,7 +1,7 @@
 import { mount } from '@cypress/vue';
 import Card from '@/components/Card.vue';
 import { cardWithLongSymbol, blueCard, yellowCard, redCard, greenCard, inheritColorCard } from '@/mocks/cards';
-import '@/tailwind.css';
+
 describe('Card', () => {
   it('Renders only the front when not reversed', () => {
     mount(Card, { props: { card: redCard } });
@@ -57,7 +57,7 @@ describe('Card', () => {
 
     it('Has red background if color is red', () => {
       mount(Card, { props: { card: redCard } });
-      cy.get('[data-test="Card"]').should('have.css', 'background-color', 'rgb(255, 0, 0)');
+      cy.get('[data-test="Card"]').should('have.css', 'background-color', 'rgb(178, 34, 34)');
     });
 
     it('Has green background if color is green', () => {
@@ -69,11 +69,16 @@ describe('Card', () => {
       mount(Card, { props: { card: blueCard } });
       cy.get('[data-test="Card"]').should('have.css', 'background-color', 'rgb(75, 170, 245)');
     });
+
+    it('Has teal background if color is inherit', () => {
+      mount(Card, { props: { card: inheritColorCard } });
+      cy.get('[data-test="Card"]').should('have.css', 'background-color', 'rgb(48, 170, 159)');
+    });
   });
 
   describe('Card styles', () => {
     it('Has random rotation and translation if randomlyRotated is true', () => {
-      //TODO: test random roation
+      //TODO: test random rotation(cypress.get returning matrix on transform)
       mount(Card, { props: { card: blueCard } });
       cy.get('[data-test="Card"]').should('have.css', 'transform');
     });

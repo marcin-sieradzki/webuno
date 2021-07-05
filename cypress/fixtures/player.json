@@ -1,0 +1,73 @@
+{
+  "key": "c3ffd925-18bd-4a13-a36b-2b0e5eb1cf77",
+  "name": "Test",
+  "isHost": false,
+  "connectionId": "459UwhazlEUkjMjET3Okmw",
+  "turnIndex": 2,
+  "sitIndex": 2,
+  "playerCards": [
+    {
+      "id": "aed54f48-d247-47c0-a64d-ee9ff9225bda",
+      "key": "y2+",
+      "symbol": "+2",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "a35d7080-93c4-4e61-b09b-dca6feabcc9f",
+      "key": "b5",
+      "symbol": "5",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "2538f5a7-7f34-45f0-ada8-e0a97d044423",
+      "key": "bs",
+      "symbol": "stop",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "4517609f-9ab5-4ab4-b90d-2d299357b8c0",
+      "key": "rs",
+      "symbol": "stop",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "200ac457-722c-42c6-92f8-2cbd62106847",
+      "key": "yr",
+      "symbol": "reverse",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "0a7529de-0875-4a90-a181-714fd8e79087",
+      "key": "g5",
+      "symbol": "5",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "c08f488e-b6ba-4ffb-8953-2f11e2318714",
+      "key": "br",
+      "symbol": "reverse",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedAt": "0001-01-01T00:00:00"
+    }
+  ]
+}

@@ -1,0 +1,575 @@
+{
+  "key": "53f1cf6d-6973-476f-86ff-09404dab6645",
+  "players": [
+    {
+      "key": "994e785e-77ac-425b-9925-a845e3a07673",
+      "name": "Marcin",
+      "isHost": true,
+      "connectionId": "ygU-2Vyo-qfh6rV3fYm6dg",
+      "turnIndex": 1,
+      "sitIndex": 1,
+      "playerCards": [
+        {
+          "id": "e871a858-4d11-4521-8e6c-b01286c1cb6c",
+          "key": "g1",
+          "symbol": "1",
+          "type": "card",
+          "color": "green",
+          "effect": null,
+          "playedAt": "0001-01-01T00:00:00"
+        },
+        {
+          "id": "ddfc4128-ec2a-456d-8a28-eb3265dcfaac",
+          "key": "y4",
+          "symbol": "4",
+          "type": "card",
+          "color": "yellow",
+          "effect": null,
+          "playedAt": "0001-01-01T00:00:00"
+        },
+        {
+          "id": "57e85fe7-18db-437c-998e-3aeb8a5ea4bf",
+          "key": "r5",
+          "symbol": "5",
+          "type": "card",
+          "color": "red",
+          "effect": null,
+          "playedAt": "0001-01-01T00:00:00"
+        },
+        {
+          "id": "de8a9698-72d7-453b-adac-ba632da3d35f",
+          "key": "g8",
+          "symbol": "8",
+          "type": "card",
+          "color": "green",
+          "effect": null,
+          "playedAt": "0001-01-01T00:00:00"
+        },
+        {
+          "id": "db4ef826-025c-4a3f-bed0-73b41263d294",
+          "key": "y5",
+          "symbol": "5",
+          "type": "card",
+          "color": "yellow",
+          "effect": null,
+          "playedAt": "0001-01-01T00:00:00"
+        },
+        {
+          "id": "c9c75082-1d0e-42b0-9acf-a3698d993f65",
+          "key": "ys",
+          "symbol": "stop",
+          "type": "card",
+          "color": "yellow",
+          "effect": null,
+          "playedAt": "0001-01-01T00:00:00"
+        },
+        {
+          "id": "28954fec-db70-4b43-bf59-cf0a8ad2084e",
+          "key": "b2+",
+          "symbol": "+2",
+          "type": "card",
+          "color": "blue",
+          "effect": null,
+          "playedAt": "0001-01-01T00:00:00"
+        }
+      ]
+    }
+  ],
+  "cardsPlayed": [
+    {
+      "id": "0bfc9362-faf5-4cf2-8410-5d003b385cdf",
+      "key": "g0",
+      "symbol": "0",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    }
+  ],
+  "deck": [
+    {
+      "id": "a4bd716f-3fbe-4bde-a58a-4997d153541a",
+      "key": "r0",
+      "symbol": "0",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "15e10e78-ab1d-4456-95db-93f53f960f8e",
+      "key": "r1",
+      "symbol": "1",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "545b8f98-577a-4022-b7e1-ba363a88f105",
+      "key": "r2",
+      "symbol": "2",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "b5f76f78-e633-4f0b-8106-73f929e7db51",
+      "key": "r3",
+      "symbol": "3",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "73694943-2eb7-46b6-a8f7-6ebf8e3ea42e",
+      "key": "r4",
+      "symbol": "4",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "18df3bdb-8174-4609-9b9c-675358c2aff8",
+      "key": "r6",
+      "symbol": "6",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "cba3ab65-a890-4613-9dce-f0513b9d53fd",
+      "key": "r7",
+      "symbol": "7",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "2c45a666-ec56-42a3-9da4-6c3b9ad4a57d",
+      "key": "r8",
+      "symbol": "8",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "36fe8bc8-d3c7-4581-ad28-0d5dc69149bb",
+      "key": "r9",
+      "symbol": "9",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "4517609f-9ab5-4ab4-b90d-2d299357b8c0",
+      "key": "rs",
+      "symbol": "stop",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "19f7a75c-3f6c-4010-84bd-e8a7a2ab0ac0",
+      "key": "rr",
+      "symbol": "reverse",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "80f5d16d-09f0-4fad-aa55-d881b7c3db06",
+      "key": "r2+",
+      "symbol": "+2",
+      "type": "card",
+      "color": "red",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "b69e4a2d-cc88-4ab4-a2d2-9ac167987538",
+      "key": "r4+",
+      "symbol": "+4",
+      "type": "card",
+      "color": "inherit",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "df46be79-3695-49cc-8047-11e537e6985a",
+      "key": "y0",
+      "symbol": "0",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "06c15d40-8f5c-4fe4-b73a-1ce8fb642581",
+      "key": "y1",
+      "symbol": "1",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "80abac5b-7186-403f-bbee-a18c95b0fbe8",
+      "key": "y2",
+      "symbol": "2",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "9248be06-0d96-46d9-83db-7904d05b8b85",
+      "key": "y3",
+      "symbol": "3",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "8839e1d0-a401-4f48-a3b0-27a5f6166f39",
+      "key": "y6",
+      "symbol": "6",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "985ae246-d674-4390-9ab5-b4c8be1e06e1",
+      "key": "y7",
+      "symbol": "7",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "0c1165e6-c5f4-4bed-aaea-5fabd24f8be2",
+      "key": "y8",
+      "symbol": "8",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "13e402af-37e8-4157-bb48-a8d8695ee72a",
+      "key": "y9",
+      "symbol": "9",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "200ac457-722c-42c6-92f8-2cbd62106847",
+      "key": "yr",
+      "symbol": "reverse",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "aed54f48-d247-47c0-a64d-ee9ff9225bda",
+      "key": "y2+",
+      "symbol": "+2",
+      "type": "card",
+      "color": "yellow",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "9812a562-0cca-4060-a388-6ae697d0c8d0",
+      "key": "y4+",
+      "symbol": "+4",
+      "type": "card",
+      "color": "inherit",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "8c25dbd4-43b9-4913-887b-f5ac5c7699ba",
+      "key": "g2",
+      "symbol": "2",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "d985e5df-314c-4acd-a5af-8495e369ecca",
+      "key": "g3",
+      "symbol": "3",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "cc9cf2af-dedf-4f48-967a-0899f769a279",
+      "key": "g4",
+      "symbol": "4",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "0a7529de-0875-4a90-a181-714fd8e79087",
+      "key": "g5",
+      "symbol": "5",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "be50f6d6-ada3-42ef-89c7-6f3d8ed873c7",
+      "key": "g6",
+      "symbol": "6",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "6a14cf30-d3df-49b0-8b05-573ae0305b58",
+      "key": "g7",
+      "symbol": "7",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "626227ba-5bcd-452d-9422-84062b1660d2",
+      "key": "g9",
+      "symbol": "9",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "c40c976e-2f26-455e-baba-1da6f06c3390",
+      "key": "gs",
+      "symbol": "stop",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "397ad15f-90ed-4510-85a7-8c867bf10761",
+      "key": "gr",
+      "symbol": "reverse",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "858ce819-e480-4385-8f09-9be38c674adc",
+      "key": "g2+",
+      "symbol": "+2",
+      "type": "card",
+      "color": "green",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "04410e31-0fa8-428a-b734-94e8283f48e0",
+      "key": "g4+",
+      "symbol": "+4",
+      "type": "card",
+      "color": "inherit",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "956b7078-5940-499e-aa33-a11e42cd9ecb",
+      "key": "b0",
+      "symbol": "0",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "bc2d25dc-3780-4fed-b8ef-d3636ce2c6dc",
+      "key": "b1",
+      "symbol": "1",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "e4904806-9490-4f6e-95f1-99c73a12069f",
+      "key": "b2",
+      "symbol": "2",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "9dd39f89-a9e8-48b5-9aef-d4da52a60839",
+      "key": "b3",
+      "symbol": "3",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "a29ea0b1-07bf-4b58-bac8-ae540790f6aa",
+      "key": "b4",
+      "symbol": "4",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "a35d7080-93c4-4e61-b09b-dca6feabcc9f",
+      "key": "b5",
+      "symbol": "5",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "e980d8ad-6e7a-46e1-aece-4a056ead3a44",
+      "key": "b6",
+      "symbol": "6",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "4e0cca0b-0add-4d78-9928-7ea50f47ef85",
+      "key": "b7",
+      "symbol": "7",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "87c26b62-16e6-4105-804f-f8b81ffd93d7",
+      "key": "b8",
+      "symbol": "8",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "952ba948-d6a0-4354-a426-144d3a258f39",
+      "key": "b9",
+      "symbol": "9",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "2538f5a7-7f34-45f0-ada8-e0a97d044423",
+      "key": "bs",
+      "symbol": "stop",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "c08f488e-b6ba-4ffb-8953-2f11e2318714",
+      "key": "br",
+      "symbol": "reverse",
+      "type": "card",
+      "color": "blue",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    },
+    {
+      "id": "44a60449-6fd6-4869-8465-429f03248ca8",
+      "key": "b4+",
+      "symbol": "+4",
+      "type": "card",
+      "color": "inherit",
+      "effect": null,
+      "playedBy": "",
+      "playedAt": "0001-01-01T00:00:00"
+    }
+  ],
+  "currentPlayerTurn": "Marcin",
+  "isStarted": false,
+  "winnerId": null
+}

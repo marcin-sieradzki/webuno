@@ -1,11 +1,16 @@
 <template>
-  <div v-for="player in players" :key="player.key" class="flex relative" :class="getCardsPosition(player)">
+  <div
+    v-for="player in players"
+    :key="player.key"
+    class="flex relative"
+    :class="calculatePositions(player).cardsRotation"
+  >
     <div v-if="player.playerCards" class="relative">
       <PlayerAvatar
         class="absolute right-0"
         :playerName="player.name"
         :active="currentTurn === player.name"
-        :rotate="getAvatarRotation(player)"
+        :rotate="calculatePositions(player).avatarRotation"
       />
       <template v-for="card in player.playerCards" :key="card.key">
         <Card
@@ -13,7 +18,6 @@
           translateLeft
           absolute
           popupOnHover
-          :test="display(card)"
           :reversed="!isPlayerCard(player.name, gamePlayer.name)"
           :card="card"
           :allowInteraction="!disableCardActions && isPlayerCard(player.name, gamePlayer.name)"
@@ -26,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, unref } from 'vue';
+import { defineComponent, Ref } from 'vue';
 import { useGame } from '@/composables/useGame';
 import { useGameBoard } from '@/composables/useGameBoard';
 import { useCard } from '@/composables/useCard';
@@ -49,63 +53,57 @@ export default defineComponent({
       return nameToCheck === playerName;
     };
 
-    const getAvatarRotation = (player: Player) => {};
-
     const getCardIndex = (key: string, cards: Ref<CardType[]>) => {
       const cardsCopy = JSON.parse(JSON.stringify(cards));
       return cardsCopy.findIndex((card) => card.key == key) || 0;
     };
-    const display = (card) => {
-      const copy = unref(card);
-      console.log(card.key);
-    };
 
-    const getCardsPosition = (cardsOwner: Player) => {
+    const calculatePositions = (cardsOwner: Player): object => {
       //TODO: Make it in a more clever way :)
       if (cardsOwner.name === player.value.name) {
-        return 'col-start-2 row-start-3';
+        return { avatarRotation: 'rotate-0', cardsRotation: 'col-start-2 row-start-3' };
       }
 
       switch (player.value.sitIndex) {
         case 1:
           if (cardsOwner.sitIndex == 2) {
-            return 'col-start-1 row-start-2 transform rotate-90';
+            return { avatarRotation: 'rotate-270', cardsRotation: 'col-start-1 row-start-2 transform rotate-90' };
           }
           if (cardsOwner.sitIndex == 3) {
-            return 'col-start-2 row-start-1 transform rotate-180';
+            return { avatarRotation: 'rotate-180', cardsRotation: 'col-start-2 row-start-1 transform rotate-180' };
           }
           if (cardsOwner.sitIndex == 4) {
-            return 'col-start-3 row-start-2 transform rotate-270';
+            return { avatarRotation: 'rotate-90', cardsRotation: 'col-start-3 row-start-2 transform rotate-270' };
           }
         case 2:
           if (cardsOwner.sitIndex == 3) {
-            return 'col-start-1 row-start-2 transform rotate-90';
+            return { avatarRotation: 'rotate-270', cardsRotation: 'col-start-1 row-start-2 transform rotate-90' };
           }
           if (cardsOwner.sitIndex == 4) {
-            return 'col-start-2 row-start-1 transform rotate-180';
+            return { avatarRotation: 'rotate-180', cardsRotation: 'col-start-2 row-start-1 transform rotate-180' };
           }
           if (cardsOwner.sitIndex == 1) {
-            return 'col-start-3 row-start-2 transform rotate-270';
+            return { avatarRotation: 'rotate-90', cardsRotation: 'col-start-3 row-start-2 transform rotate-270' };
           }
         case 3:
           if (cardsOwner.sitIndex == 4) {
-            return 'col-start-1 row-start-2 transform rotate-90';
+            return { avatarRotation: 'rotate-270', cardsRotation: 'col-start-1 row-start-2 transform rotate-90' };
           }
           if (cardsOwner.sitIndex == 1) {
-            return 'col-start-2 row-start-1 transform rotate-180';
+            return { avatarRotation: 'rotate-180', cardsRotation: 'col-start-2 row-start-1 transform rotate-180' };
           }
           if (cardsOwner.sitIndex == 2) {
-            return 'col-start-3 row-start-2 transform rotate-270';
+            return { avatarRotation: 'rotate-90', cardsRotation: 'col-start-3 row-start-2 transform rotate-270' };
           }
         case 4:
           if (cardsOwner.sitIndex == 1) {
-            return 'col-start-1 row-start-2 transform rotate-90';
+            return { avatarRotation: 'rotate-270', cardsRotation: 'col-start-1 row-start-2 transform rotate-90' };
           }
           if (cardsOwner.sitIndex == 2) {
-            return 'col-start-2 row-start-1 transform rotate-180';
+            return { avatarRotation: 'rotate-180', cardsRotation: 'col-start-2 row-start-1 transform rotate-180' };
           }
           if (cardsOwner.sitIndex == 3) {
-            return 'col-start-3 row-start-2 transform rotate-270';
+            return { avatarRotation: 'rotate-90', cardsRotation: 'col-start-3 row-start-2 transform rotate-270' };
           }
         default:
           break;
@@ -115,17 +113,15 @@ export default defineComponent({
     return {
       players,
       gamePlayer: player,
-      getCardsPosition,
+      calculatePositions,
       game,
       isPlayerCard,
       currentTurn,
       playCard,
       disableCardActions,
       isPlayerTurn,
-      getAvatarRotation,
       playedCards,
       getCardIndex,
-      display,
     };
   },
 });
