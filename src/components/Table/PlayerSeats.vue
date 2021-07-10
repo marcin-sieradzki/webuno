@@ -3,14 +3,14 @@
     v-for="player in players"
     :key="player.key"
     class="flex relative"
-    :class="calculatePositions(player).cardsRotation"
+    :class="calculatePositions(player, gamePlayer).cardsRotation"
   >
     <div v-if="player.playerCards" class="relative">
       <PlayerAvatar
         class="absolute right-0"
         :playerName="player.name"
         :active="currentTurn === player.name"
-        :rotate="calculatePositions(player).avatarRotation"
+        :rotate="calculatePositions(player, gamePlayer).avatarRotation"
       />
       <template v-for="card in player.playerCards" :key="card.key">
         <Card
@@ -22,7 +22,7 @@
           :card="card"
           :allowInteraction="!disableCardActions && isPlayerCard(player.name, gamePlayer.name)"
           :indexInStack="getCardIndex(card.key, player.playerCards)"
-          @cardClicked="playCard({ gameKey: game.key, playerName: player.name, card })"
+          @cardClicked="playCard({ gameKey: game.key, playerName: player.name, cardToPlay: card })"
         ></Card>
       </template>
     </div>
@@ -30,11 +30,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref } from 'vue';
-import { useGame } from '@/composables/useGame';
+import { defineComponent } from 'vue';
+import { useGame } from '@/composables/useGameService';
 import { useGameBoard } from '@/composables/useGameBoard';
-import { useCard } from '@/composables/useCard';
-import { Player, Card as CardType } from '@/Types';
+import { useCardService } from '@/composables/useCardService';
+import { usePlayerSeats } from '@/composables/usePlayerSeats';
 
 import Card from '@/components/Card.vue';
 import CardStack from '@/components/Table/CardStack.vue';
@@ -46,69 +46,9 @@ export default defineComponent({
   components: { Card, CardStack, PlayerAvatar, GameTable },
   setup() {
     const { players, player, game, currentTurn, playedCards } = useGame();
-    const { playCard } = useCard();
-    const { disableCardActions, isPlayerTurn } = useGameBoard();
-
-    const isPlayerCard = (nameToCheck: string, playerName: string) => {
-      return nameToCheck === playerName;
-    };
-
-    const getCardIndex = (key: string, cards: Ref<CardType[]>) => {
-      const cardsCopy = JSON.parse(JSON.stringify(cards));
-      return cardsCopy.findIndex((card) => card.key == key) || 0;
-    };
-
-    const calculatePositions = (cardsOwner: Player): object => {
-      //TODO: Make it in a more clever way :)
-      if (cardsOwner.name === player.value.name) {
-        return { avatarRotation: 'rotate-0', cardsRotation: 'col-start-2 row-start-3' };
-      }
-
-      switch (player.value.sitIndex) {
-        case 1:
-          if (cardsOwner.sitIndex == 2) {
-            return { avatarRotation: 'rotate-270', cardsRotation: 'col-start-1 row-start-2 transform rotate-90' };
-          }
-          if (cardsOwner.sitIndex == 3) {
-            return { avatarRotation: 'rotate-180', cardsRotation: 'col-start-2 row-start-1 transform rotate-180' };
-          }
-          if (cardsOwner.sitIndex == 4) {
-            return { avatarRotation: 'rotate-90', cardsRotation: 'col-start-3 row-start-2 transform rotate-270' };
-          }
-        case 2:
-          if (cardsOwner.sitIndex == 3) {
-            return { avatarRotation: 'rotate-270', cardsRotation: 'col-start-1 row-start-2 transform rotate-90' };
-          }
-          if (cardsOwner.sitIndex == 4) {
-            return { avatarRotation: 'rotate-180', cardsRotation: 'col-start-2 row-start-1 transform rotate-180' };
-          }
-          if (cardsOwner.sitIndex == 1) {
-            return { avatarRotation: 'rotate-90', cardsRotation: 'col-start-3 row-start-2 transform rotate-270' };
-          }
-        case 3:
-          if (cardsOwner.sitIndex == 4) {
-            return { avatarRotation: 'rotate-270', cardsRotation: 'col-start-1 row-start-2 transform rotate-90' };
-          }
-          if (cardsOwner.sitIndex == 1) {
-            return { avatarRotation: 'rotate-180', cardsRotation: 'col-start-2 row-start-1 transform rotate-180' };
-          }
-          if (cardsOwner.sitIndex == 2) {
-            return { avatarRotation: 'rotate-90', cardsRotation: 'col-start-3 row-start-2 transform rotate-270' };
-          }
-        case 4:
-          if (cardsOwner.sitIndex == 1) {
-            return { avatarRotation: 'rotate-270', cardsRotation: 'col-start-1 row-start-2 transform rotate-90' };
-          }
-          if (cardsOwner.sitIndex == 2) {
-            return { avatarRotation: 'rotate-180', cardsRotation: 'col-start-2 row-start-1 transform rotate-180' };
-          }
-          if (cardsOwner.sitIndex == 3) {
-            return { avatarRotation: 'rotate-90', cardsRotation: 'col-start-3 row-start-2 transform rotate-270' };
-          }
-        default:
-          break;
-      }
-    };
+    const { playCard } = useCardService();
+    const { disableCardActions } = useGameBoard();
+    const { isPlayerCard, getCardIndex, calculatePositions } = usePlayerSeats();
 
     return {
       players,
@@ -119,7 +59,6 @@ export default defineComponent({
       currentTurn,
       playCard,
       disableCardActions,
-      isPlayerTurn,
       playedCards,
       getCardIndex,
     };

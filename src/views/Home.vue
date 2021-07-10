@@ -8,7 +8,7 @@
             v-model="playerName"
             @toggleShowFront="toggleShowFront"
             @startGame="onStartGame"
-            :loading="isStartingGame"
+            :loading="isLoading"
           ></GameFormFront>
         </template>
         <template #back="{ toggleShowFront }">
@@ -17,7 +17,7 @@
             v-model:gameKey="gameKey"
             @toggleShowFront="toggleShowFront"
             @joinGame="onJoinGame(gameKey, playerName)"
-            :loading="isJoiningGame"
+            :loading="isLoading"
           ></GameFormBack>
         </template>
       </FlipCardForm>
@@ -26,9 +26,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 
-import { useGame } from '@/composables/useGame';
+import { useGame } from '@/composables/useGameService';
 import { useJoinGame } from '@/composables/useJoinGame';
 import { useRouter } from 'vue-router';
 import { useHubConnection } from '@/composables/useHubConnection';
@@ -51,7 +51,9 @@ export default defineComponent({
     const router = useRouter();
     const { startGame, game, setGame, error, loading: isStartingGame } = useGame();
     const { joinGame, loading: isJoiningGame, error: joinGameError } = useJoinGame();
-    const { connectToHub, isConnected } = useHubConnection();
+    const { connectToHub, isConnected, loading: isConnectingToHub, error: hubConnectError } = useHubConnection();
+
+    const isFormLoading = computed(() => isStartingGame || isJoiningGame || isConnectingToHub);
 
     const onStartGame = async () => {
       if (!isConnected.value) {
@@ -85,9 +87,8 @@ export default defineComponent({
       playerName,
       onStartGame,
       onJoinGame,
-      isJoiningGame,
       joinGameError,
-      isStartingGame,
+      isLoading: isFormLoading.value,
     };
   },
 });

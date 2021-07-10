@@ -1,7 +1,6 @@
 <template>
   <div v-if="game && game.players.length" class="game h-screen max-h-full w-full overflow-hidden relative">
     <GameBoard />
-    <!-- <Chat /> -->
     <GameWinnerDialog v-if="winner" :winner="winner" />
   </div>
 </template>
@@ -11,27 +10,22 @@ import { defineComponent, onMounted, onBeforeUnmount, computed, watch } from 'vu
 
 import GameBoard from '@/components/GameBoard.vue';
 import GameWinnerDialog from '@/components/Dialogs/GameWinnerDialog.vue';
-import Chat from '@/components/Chat.vue';
 
 import { useHubConnection } from '@/composables/useHubConnection';
-import { useGame } from '@/composables/useGame';
+import { useGame } from '@/composables/useGameService';
 import { useJoinGame } from '@/composables/useJoinGame';
 import { useRoute } from 'vue-router';
 import { useGameListeners } from '@/composables/useGameListeners';
 
 export default defineComponent({
   name: 'Game',
-  components: { GameBoard, Chat, GameWinnerDialog },
+  components: { GameBoard, GameWinnerDialog },
   setup() {
     const route = useRoute();
-    const { player, disconnectFromGame, setGame, game, players, winner } = useGame();
+    const { player, setGame, game, players, winner } = useGame();
     const { joinGame, loading: isJoiningGame, error: joinGameError } = useJoinGame();
     const { connectToHub, isConnected, loading, error } = useHubConnection();
     const { registerGameListeners } = useGameListeners();
-
-    const disconnect = async () => {
-      await disconnectFromGame();
-    };
 
     watch(isConnected, async (value) => {
       if (!value) {
@@ -55,13 +49,8 @@ export default defineComponent({
       registerGameListeners();
     });
 
-    onBeforeUnmount(async () => {
-      await disconnectFromGame();
-    });
-
     return {
       game,
-      disconnect,
       player,
       players,
       winner,

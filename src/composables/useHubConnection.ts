@@ -6,18 +6,26 @@ const connection = ref<HubConnection>(null);
 const loading = ref(false);
 const error = ref(null);
 
-export const useHubConnection = () => {
-  const isConnected = computed(() => (connection.value?.connectionId?.length ? true : false));
+export const registerListener = (eventName: string, callback: Function) => {
+  connection.value.on(eventName, (data) => {
+    callback(data);
+  });
+};
 
-  const buildHubConnection = () => {
-    const newConnection = new HubConnectionBuilder().withUrl(hubUrl).configureLogging(LogLevel.Information).build();
-    connection.value = newConnection;
-  };
+export const buildConnection = (url: string, logLevel: LogLevel) => {
+  return new HubConnectionBuilder().withUrl(url).configureLogging(logLevel).build();
+};
+
+export const getConnectionId = (connection: HubConnection) => (connection?.connectionId?.length ? true : false);
+
+export const useHubConnection = () => {
+  const isConnected = computed(() => getConnectionId(connection.value as HubConnection));
 
   const connectToHub = async () => {
     try {
       loading.value = true;
-      buildHubConnection();
+      const newConnection = buildConnection(hubUrl, LogLevel.Information);
+      connection.value = newConnection;
       await connection.value.start();
     } catch (e) {
       error.value = e;
@@ -30,14 +38,7 @@ export const useHubConnection = () => {
     await connection.value.stop();
   };
 
-  const registerListener = (eventName: string, callback: Function) => {
-    connection.value.on(eventName, (data) => {
-      callback(data);
-    });
-  };
-
   return {
-    buildHubConnection,
     isConnected,
     connectToHub,
     disconnectFromHub,

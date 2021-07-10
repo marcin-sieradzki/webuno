@@ -1,4 +1,4 @@
-import { HubResponse } from './../Types';
+import { HubResponse } from '../Types';
 import { useHubConnection } from './useHubConnection';
 import { ref, computed, Ref } from 'vue';
 import { Game, Player } from '@/Types';
@@ -29,6 +29,19 @@ export const useGame = () => {
     }
   };
 
+  const joinGame = async ({ gameKey, playerName }: JoinGameParams): Promise<Game> => {
+    try {
+      loading.value = true;
+      const joinedGame: Game = await connection.value.invoke('JoinGame', gameKey, playerName);
+      return joinedGame;
+    } catch (e) {
+      error.value = e;
+      throw new Error(e);
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const refreshGame = async (game: Game): Promise<void | Error> => {
     loading.value = true;
     try {
@@ -50,6 +63,7 @@ export const useGame = () => {
       throw new Error(e);
     }
   };
+
   const setGame = (game: Game) => {
     $game.value = game;
   };
@@ -88,6 +102,7 @@ export const useGame = () => {
     refreshGame,
     startGame,
     fetchGame,
+    joinGame,
     setGame,
     loading,
     error,
@@ -98,4 +113,9 @@ export const useGame = () => {
 interface UseGameErrors {
   startGame: Error;
   fetchGame: Error;
+}
+
+interface JoinGameParams {
+  gameKey: string;
+  playerName: string;
 }

@@ -6,46 +6,32 @@
     :class="[classObject, cardColor]"
     :style="styleObject"
   >
-    <div
-      v-if="!reversed"
-      data-test="Card-Front"
-      class="
-        w-full
-        h-full
-        border-4
-        rounded-[50%]
-        transform
-        rotate-18
-        flex
-        items-center
-        justify-center
-        text-white
-        font-bold
-      "
-    >
+    <CardFace v-if="!reversed" data-test="Card-Front">
       <span class="transform rotate-negative-18 text-5xl" data-test="Card-Symbol"> {{ cardSymbol }}</span>
       <span class="transform rotate-negative-18 absolute top-5 -left-5" data-test="Card-Symbol"> {{ cardSymbol }}</span>
       <span class="transform rotate-negative-18 absolute bottom-5 -right-5" data-test="Card-Symbol">
         {{ cardSymbol }}</span
       >
-    </div>
-    <div
-      data-test="Card-Back"
-      class="w-full h-full border-4 rounded-[50%] transform rotate-18 flex items-center justify-center"
-      v-if="reversed"
-    >
+    </CardFace>
+    <CardFace v-if="reversed" data-test="Card-Back">
       <span class="transform rotate-negative-18 text-white font-bold text-xl">WEBUNO</span>
-    </div>
+    </CardFace>
   </div>
 </template>
 
 <script lang="ts">
-import { Ref, unref } from 'vue';
+import CardFace from '@/components/CardFace.vue';
+
 import { Card } from '@/Types';
-import { computed, defineComponent, PropType, toRefs } from 'vue';
-import { getRandomNumber } from '@/utils/shared/numberUtils';
+import { Ref, unref } from 'vue';
+import { defineComponent, PropType, toRefs } from 'vue';
+import { useCard } from '@/composables/useCard';
+
 export default defineComponent({
   name: 'Card',
+  components: {
+    CardFace,
+  },
   props: {
     card: {
       type: Object as PropType<Ref<Card>>,
@@ -83,70 +69,20 @@ export default defineComponent({
     const { card, randomlyRotated, reversed, absolute, popupOnHover, indexInStack, translateLeft, allowInteraction } =
       toRefs(props);
 
+    const { cardSymbol, cardColor, classObject, styleObject } = useCard({
+      card,
+      randomlyRotated,
+      reversed,
+      absolute,
+      popupOnHover,
+      indexInStack,
+      translateLeft,
+      allowInteraction,
+    });
+
     const cardClicked = (clickedCard: Ref<Card>) => {
       if (!allowInteraction.value) return;
       emit('cardClicked', unref(clickedCard));
-    };
-
-    const cardSymbol = computed(() => {
-      return card?.value?.symbol.length < 3 ? card.value.symbol : card.value.symbol.charAt(0).toUpperCase();
-    });
-
-    const cardColor = computed(() => {
-      if (reversed.value) {
-        return 'bg-red-500';
-      }
-      switch (card.value.color) {
-        case 'red':
-          return 'bg-red-500';
-        case 'yellow':
-          return 'bg-yellow-400';
-        case 'green':
-          return 'bg-green-400';
-        case 'blue':
-          return 'bg-blue-400';
-        default:
-          return 'bg-teal-400';
-      }
-    });
-
-    const classObject = computed(() => {
-      return {
-        'cursor-pointer': allowInteraction.value,
-        'pointer-events-none': !allowInteraction.value,
-        'hover:z-10': popupOnHover.value,
-        'hover:bottom-7': popupOnHover.value,
-        absolute: absolute.value,
-      };
-    });
-
-    const styleObject = computed(() => {
-      return {
-        transform: buildTransform(),
-        transformOrigin: randomlyRotated.value ? 'default' : 'center',
-      };
-    });
-
-    const buildTransform = () => {
-      if (randomlyRotated.value) {
-        return randomRotation.value;
-      }
-      if (translateLeft.value) {
-        return `translate(${indexInStack.value * 2.5}rem)`;
-      }
-      return '';
-    };
-
-    const randomRotation = computed(() => {
-      return `rotate(${getRandomRotation()}) translate(${getRandomTranslateValues()})`;
-    });
-
-    const getRandomRotation = () => {
-      return `${getRandomNumber(-60, 60)}deg`;
-    };
-
-    const getRandomTranslateValues = () => {
-      return `${getRandomNumber(-10, 10)}px,${getRandomNumber(-10, 10)}px`;
     };
 
     return {
@@ -162,6 +98,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .card {
-  transition: bottom 0.2s linear;
+  transition: bottom 0.2s ease-in-out;
 }
 </style>

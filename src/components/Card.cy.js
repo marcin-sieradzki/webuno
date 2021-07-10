@@ -2,7 +2,7 @@ import { mount } from '@cypress/vue';
 import Card from '@/components/Card.vue';
 import { cardWithLongSymbol, blueCard, yellowCard, redCard, greenCard, inheritColorCard } from '@/mocks/cards';
 
-describe('Card', () => {
+describe('Card.vue', () => {
   it('Renders only the front when not reversed', () => {
     mount(Card, { props: { card: redCard } });
     cy.get('[data-test="Card-Front"]').should('be.visible');
