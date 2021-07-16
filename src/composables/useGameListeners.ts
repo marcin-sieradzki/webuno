@@ -1,5 +1,5 @@
 import { CardPlayedResponse, Game, Player } from '@/Types';
-import { useGame } from './useGameService';
+import { useGameService } from './useGameService';
 import { useHubConnection } from './useHubConnection';
 
 export function registerListeners(registerListener: Function, refreshGame: Function, game: Game) {
@@ -25,7 +25,7 @@ export function registerListeners(registerListener: Function, refreshGame: Funct
 }
 
 export const useGameListeners = () => {
-  const { refreshGame, game } = useGame();
+  const { refreshGame, game } = useGameService();
   const { registerListener } = useHubConnection();
 
   function registerGameListeners() {

@@ -28,8 +28,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
 
-import { useGame } from '@/composables/useGameService';
-import { useJoinGame } from '@/composables/useJoinGame';
+import { useGameService } from '@/composables/useGameService';
 import { useRouter } from 'vue-router';
 import { useHubConnection } from '@/composables/useHubConnection';
 
@@ -49,11 +48,10 @@ export default defineComponent({
     const playerName = ref('');
 
     const router = useRouter();
-    const { startGame, game, setGame, error, loading: isStartingGame } = useGame();
-    const { joinGame, loading: isJoiningGame, error: joinGameError } = useJoinGame();
+    const { startGame, game, setGame, error, loading: isLoadingGame, joinGame } = useGameService();
     const { connectToHub, isConnected, loading: isConnectingToHub, error: hubConnectError } = useHubConnection();
 
-    const isFormLoading = computed(() => isStartingGame || isJoiningGame || isConnectingToHub);
+    const isFormLoading = computed(() => isLoadingGame || isConnectingToHub);
 
     const onStartGame = async () => {
       if (!isConnected.value) {
@@ -84,10 +82,11 @@ export default defineComponent({
 
     return {
       gameKey,
+      error,
+      hubConnectError,
       playerName,
       onStartGame,
       onJoinGame,
-      joinGameError,
       isLoading: isFormLoading.value,
     };
   },

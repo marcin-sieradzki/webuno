@@ -12,7 +12,7 @@ import GameBoard from '@/components/GameBoard.vue';
 import GameWinnerDialog from '@/components/Dialogs/GameWinnerDialog.vue';
 
 import { useHubConnection } from '@/composables/useHubConnection';
-import { useGame } from '@/composables/useGameService';
+import { useGameService } from '@/composables/useGameService';
 import { useJoinGame } from '@/composables/useJoinGame';
 import { useRoute } from 'vue-router';
 import { useGameListeners } from '@/composables/useGameListeners';
@@ -22,7 +22,7 @@ export default defineComponent({
   components: { GameBoard, GameWinnerDialog },
   setup() {
     const route = useRoute();
-    const { player, setGame, game, players, winner } = useGame();
+    const { player, setGame, game, players, winner } = useGameService();
     const { joinGame, loading: isJoiningGame, error: joinGameError } = useJoinGame();
     const { connectToHub, isConnected, loading, error } = useHubConnection();
     const { registerGameListeners } = useGameListeners();

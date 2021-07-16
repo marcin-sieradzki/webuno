@@ -11,7 +11,7 @@ const { connection } = useHubConnection();
 const apiUrl = 'https://webuno-api.azurewebsites.net/api';
 const $game = ref<Game | null>(null);
 
-export const useGame = () => {
+export const useGameService = () => {
   const loading: Ref<boolean> = sharedRef('useGame-loading', false);
   const error: Ref<UseGameErrors> = sharedRef('useGame-error', { startGame: null, refreshGame: null });
   const route = useRoute();

@@ -1,4 +1,4 @@
-import { useGame } from '@/composables/useGameService';
+import { useGameService } from '@/composables/useGameService';
 import { computed } from 'vue';
 import { useCardService } from './useCardService';
 
@@ -7,7 +7,7 @@ export function getIsPlayerTurn(currentTurnPlayerName: string, username: string)
 }
 
 export const useGameBoard = () => {
-  const { player, currentTurn } = useGame();
+  const { player, currentTurn } = useGameService();
   const { loading: isUsingCard } = useCardService();
 
   const isPlayerTurn = computed(() => getIsPlayerTurn(currentTurn.value, player.value.name));

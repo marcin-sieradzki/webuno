@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useGame } from '@/composables/useGameService';
+import { useGameService } from '@/composables/useGameService';
 import { useGameBoard } from '@/composables/useGameBoard';
 import { useCardService } from '@/composables/useCardService';
 
@@ -46,7 +46,7 @@ export default defineComponent({
   name: 'GameTable',
   components: { Card, CardStack, PlayerAvatar },
   setup() {
-    const { game, player } = useGame();
+    const { game, player } = useGameService();
     const { drawCard } = useCardService();
     const { disableCardActions } = useGameBoard();
 
