@@ -1,51 +1,27 @@
 <template>
-  <section class="home h-screen w-screen flex flex-col justify-center items-center">
-    <div>
-      <h1 class="text-white text-4xl font-semibold text-center">Webuno</h1>
-      <FlipCardForm>
-        <template #front="{ toggleShowFront }">
-          <GameFormFront
-            v-model="playerName"
-            @toggleShowFront="toggleShowFront"
-            @startGame="onStartGame"
-            :loading="isLoading"
-          ></GameFormFront>
-        </template>
-        <template #back="{ toggleShowFront }">
-          <GameFormBack
-            v-model:playerName="playerName"
-            v-model:gameKey="gameKey"
-            @toggleShowFront="toggleShowFront"
-            @joinGame="onJoinGame(gameKey, playerName)"
-            :loading="isLoading"
-          ></GameFormBack>
-        </template>
-      </FlipCardForm>
-    </div>
+  <section class="home h-screen w-screen flex flex-col justify-center items-center bg-">
+    <h1 class="text-white text-4xl font-semibold text-center">Webuno</h1>
+    <MatchList />
   </section>
 </template>
 
 <script lang="ts">
+import MatchList from '../components/Home/MatchList.vue';
 import { computed, defineComponent, ref } from 'vue';
 
 import { useGameService } from '@/composables/useGameService';
 import { useRouter } from 'vue-router';
 import { useHubConnection } from '@/composables/useHubConnection';
 
-import FlipCardForm from '@/components/Forms/FlipCardForm.vue';
-import GameFormFront from '@/components/Home/GameFormFront.vue';
-import GameFormBack from '@/components/Home/GameFormBack.vue';
-
 export default defineComponent({
   name: 'Home',
   components: {
-    FlipCardForm,
-    GameFormFront,
-    GameFormBack,
+    MatchList,
   },
   setup() {
     const gameKey = ref('');
     const playerName = ref('');
+    const gameName = ref('');
 
     const router = useRouter();
     const { startGame, game, setGame, error, loading: isLoadingGame, joinGame } = useGameService();
@@ -58,7 +34,7 @@ export default defineComponent({
         await connectToHub();
       }
 
-      const startedGame = await startGame(playerName.value);
+      const startedGame = await startGame(playerName.value, gameName.value);
       setGame(startedGame);
       navigateToGame(game.value.key, playerName.value);
     };
@@ -95,6 +71,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .home {
-  background: radial-gradient(var(--blue-500), var(--surface-100));
+  background: linear-gradient(var(--green-500), var(--green-300));
 }
 </style>

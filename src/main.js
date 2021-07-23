@@ -12,12 +12,14 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Avatar from 'primevue/avatar';
+import ProgressSpinner from 'primevue/progressspinner';
 const app = createApp(App);
 
 app.component('Button', Button);
 app.component('InputText', InputText);
 app.component('Dialog', Dialog);
 app.component('Avatar', Avatar);
+app.component('ProgressSpinner', ProgressSpinner);
 
 const router = createRouter({
   history: createWebHistory(),

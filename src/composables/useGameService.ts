@@ -16,10 +16,10 @@ export const useGameService = () => {
   const error: Ref<UseGameErrors> = sharedRef('useGame-error', { startGame: null, refreshGame: null });
   const route = useRoute();
 
-  const startGame = async (playerName: string): Promise<Game> => {
+  const startGame = async (playerName: string, gameName: string): Promise<Game> => {
     try {
       loading.value = true;
-      const newGame: Game = await connection.value.invoke('StartGame', playerName);
+      const newGame: Game = await connection.value.invoke('StartGame', playerName, gameName);
       return newGame;
     } catch (e) {
       error.value.startGame = e;
