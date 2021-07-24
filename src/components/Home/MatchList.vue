@@ -1,6 +1,6 @@
 <template>
   <main
-    class="h-1/2 w-1/2 border border-gray-600 bg-surface-0 rounded-2xl p-4 grid grid-cols-1 grid-rows-[auto,1fr,auto]"
+    class="h-2/3 w-1/2 border border-gray-600 bg-surface-0 rounded-2xl p-4 grid grid-cols-1 grid-rows-[auto,1fr,auto]"
   >
     <div class="flex justify-between items-center pb-4">
       <h2 class="text-white">Choose a match from a list below to join.</h2>
