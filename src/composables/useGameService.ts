@@ -88,7 +88,7 @@ export const useGameService = () => {
 
   return {
     player: computed(() =>
-      $game.value?.players?.find((player: Player) => player.name === route?.params?.playerName.toString())
+      $game.value?.players?.find((player: Player) => player.name === localStorage.getItem(`${route.params.gameKey}`))
     ),
     players: computed(() =>
       $game?.value?.players?.sort((currentPlayer, nextPlayer) => {

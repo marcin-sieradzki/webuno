@@ -4,7 +4,7 @@
   >
     <div class="flex justify-between items-center pb-4">
       <h2 class="text-white">Choose a match from a list below to join.</h2>
-      <Button :disabled="loading || !selectedGame" @click="toggleJoinGameDialog">Join</Button>
+      <Button :disabled="loading" @click="toggleCreateGameDialog">Create a new game</Button>
     </div>
     <ul class="h-full w-full backdrop-filter border border-gray-600 overflow-auto rounded-2xl text-white">
       <template v-if="allGames.length">
@@ -26,11 +26,17 @@
         <ProgressSpinner></ProgressSpinner>
       </div>
     </ul>
-    <Button class="create-game-button w-44 place-self-end" :disabled="loading" @click="toggleCreateGameDialog"
-      >Create a new game</Button
+
+    <Button :disabled="loading || !selectedGame" @click="toggleJoinGameDialog" class="join-game-button place-self-end"
+      >Join</Button
     >
   </main>
-  <JoinGameDialog v-if="isJoinGameDialogOpen" :gameKey="selectedGame.key" @update:visible="toggleJoinGameDialog" />
+  <JoinGameDialog
+    v-if="isJoinGameDialogOpen"
+    :gameKey="selectedGame.key"
+    :gamesList="allGames"
+    @update:visible="toggleJoinGameDialog"
+  />
   <CreateGameDialog v-if="isCreateGameDialogOpen" @update:visible="toggleCreateGameDialog" />
 </template>
 
@@ -51,10 +57,6 @@ export default defineComponent({
 
     const selectedGame: Ref<Game> = ref(null);
     const selectGame = (game: Game) => {
-      if (selectedGame?.value?.key == game.key) {
-        selectedGame.value = null;
-        return;
-      }
       selectedGame.value = game;
     };
 
@@ -87,7 +89,7 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-.create-game-button {
+.join-game-button {
   margin-top: 1rem;
 }
 .active {

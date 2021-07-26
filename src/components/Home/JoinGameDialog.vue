@@ -1,6 +1,6 @@
 <template>
   <Dialog header="Join game" class="w-1/5" v-model:visible="visible" :closable="true">
-    <div class="flex flex-col">
+    <div class="flex flex-col" v-if="!isTryingToReconnect && !isGameFull">
       <div class="p-field flex flex-col">
         <label for="playerName">Name</label>
         <InputText
@@ -22,21 +22,35 @@
         @click="joinGameClicked(gameKey, playerName)"
       />
     </div>
+    <div class="flex justify-center items-center" v-if="isTryingToReconnect && !isGameFull">
+      <Button
+        label="Reconnect"
+        class="form-button"
+        type="submit"
+        :disabled="isJoiningGame"
+        @click="joinGameClicked(gameKey)"
+      />
+    </div>
+    <div class="flex justify-center items-center" v-if="isGameFull">
+      <span>Game is full.</span>
+    </div>
   </Dialog>
 </template>
 
 <script lang="ts">
 import { useJoinGame } from '@/composables/useJoinGame';
 import { useHubConnection } from '@/composables/useHubConnection';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { GameDto } from '@/Types';
 
 export default defineComponent({
   name: 'JoinGameDialog',
   props: {
     gameKey: String,
+    gamesList: Array as PropType<GameDto[]>,
   },
-  setup() {
+  setup(props) {
     const visible = ref(true);
     const playerName = ref('');
     const validationError = ref(false);
@@ -44,25 +58,49 @@ export default defineComponent({
     const { joinGame, loading } = useJoinGame();
     const { connectToHub, loading: isConnectingToHub } = useHubConnection();
 
+    const isTryingToReconnect = computed(() => {
+      return localStorage.getItem(`${props.gameKey}`)?.length ? true : false;
+    });
+
+    const isGameFull = computed(() => {
+      if (isTryingToReconnect.value) {
+        return false;
+      }
+      const games = props.gamesList.map((g) => ({ ...g }));
+      const game = games.find((game) => game.key === props.gameKey);
+      console.log(game);
+      return game.playerCount === 4;
+    });
+
     const isJoiningGame = computed(() => {
       return loading.value || isConnectingToHub.value;
     });
-    const joinGameClicked = async (gameKey: string, playerName: string) => {
+
+    const joinGameClicked = async (gameKey: string, playerName?: string) => {
       try {
+        if (isTryingToReconnect.value) {
+          await connectToHub();
+          const nameFromGame = localStorage.getItem(`${props.gameKey}`);
+          await joinGame({ gameKey, playerName: nameFromGame });
+          navigateToGame(gameKey);
+          return;
+        }
+
         if (!playerName.length) {
           validationError.value = true;
           return;
         }
 
         await connectToHub();
-        await joinGame({ gameKey, playerName });
-        navigateToGame(gameKey, playerName);
+        const joinedGame = await joinGame({ gameKey, playerName });
+        localStorage.setItem(`${joinedGame.key}`, playerName);
+        navigateToGame(gameKey);
       } catch (e) {}
     };
-    const navigateToGame = (gameKey: string, playerName: string) => {
+    const navigateToGame = (gameKey: string) => {
       router.push({
         name: 'Game',
-        params: { gameKey, playerName },
+        params: { gameKey },
       });
     };
 
@@ -76,6 +114,8 @@ export default defineComponent({
       joinGameClicked,
       validationError,
       isJoiningGame,
+      isTryingToReconnect,
+      isGameFull,
     };
   },
 });

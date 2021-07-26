@@ -41,7 +41,7 @@ export default defineComponent({
 
         const joinedGame = await joinGame({
           gameKey: route.params.gameKey.toString(),
-          playerName: route.params.playerName.toString(),
+          playerName: localStorage.getItem(`${route.params.gameKey}`),
         });
 
         setGame(joinedGame);

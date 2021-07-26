@@ -1,13 +1,22 @@
-import { Ref } from "vue";
+import { Ref } from 'vue';
 
 export interface Game {
   key: string;
+  name: string;
   players: Player[];
   cardsPlayed: Card[];
   currentPlayerTurn: string;
   deck: Card[];
   winnerId: string;
 }
+
+export interface GameDto {
+  key: string;
+  name: string;
+  playerCount: number;
+  winnerId: string;
+}
+
 export interface Player {
   key: string;
   name: string;
@@ -43,12 +52,12 @@ export interface CardPlayedResponse {
   playerName: string;
   card: Card;
 }
-export type CardType = "hand" | "stack" | "played";
+export type CardType = 'hand' | 'stack' | 'played';
 
 export enum CardTypeEnum {
-  hand = "hand",
-  stack = "stack",
-  played = "played",
+  hand = 'hand',
+  stack = 'stack',
+  played = 'played',
 }
 
 export interface PromiseResponse {
