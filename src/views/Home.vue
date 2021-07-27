@@ -1,6 +1,6 @@
 <template>
   <section class="home h-screen w-screen flex flex-col justify-center items-center bg-">
-    <h1 class="text-white text-4xl font-semibold text-center">Webuno</h1>
+    <h1 class="text-white text-4xl font-semibold text-center mb-4">Webuno</h1>
     <MatchList />
   </section>
 </template>
