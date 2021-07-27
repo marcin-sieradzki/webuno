@@ -18,6 +18,14 @@ module.exports = {
       minWidth: {
         40: '10rem',
         36: '9rem',
+        '1/2': '50%',
+      },
+      maxWidth: {
+        36: '9rem',
+        72: '18rem',
+      },
+      minHeight: {
+        '2/3': '66.66666%',
       },
       height: {
         104: '26rem',
@@ -25,10 +33,7 @@ module.exports = {
         120: '30rem',
         128: '32rem',
       },
-      maxWidth: {
-        36: '9rem',
-        72: '18rem',
-      },
+
       zIndex: {
         '-10': '-10',
       },

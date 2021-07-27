@@ -21,7 +21,7 @@ export default defineComponent({
     const { playerName, rotate, active } = toRefs(props);
 
     const nameFirstLetter = computed(() => {
-      return playerName?.value.charAt(0).toUpperCase();
+      return playerName?.value?.charAt(0).toUpperCase() || '';
     });
 
     const classObject = computed(() => {

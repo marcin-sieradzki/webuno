@@ -9,6 +9,7 @@ import { sharedRef } from '@/utils/shared/useSharedRef';
 const { connection } = useHubConnection();
 
 const apiUrl = 'https://webuno-api.azurewebsites.net/api';
+// const apiUrl = 'https://webuno-api.azurewebsites.net/api';
 const $game = ref<Game | null>(null);
 
 export const useGameService = () => {

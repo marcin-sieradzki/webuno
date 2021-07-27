@@ -1,5 +1,5 @@
 <template>
-  <Dialog header="Create game" class="w-1/5" v-model:visible="visible" :closable="true">
+  <Dialog header="Create game" class="w-1/5" v-model:visible="visible" :closable="true" data-test="Create-Game-Dialog">
     <div class="flex flex-col">
       <div class="flex flex-col gap-4">
         <div class="p-field flex flex-col">
@@ -74,6 +74,7 @@ export default defineComponent({
 
         await connectToHub();
         const startedGame = await startGame(playerNameInput, gameNameInput);
+        localStorage.setItem(`${startedGame.key}`, playerNameInput);
         navigateToGame(startedGame.key, playerNameInput);
       } catch (e) {}
     };

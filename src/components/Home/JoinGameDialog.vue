@@ -1,5 +1,5 @@
 <template>
-  <Dialog header="Join game" class="w-1/5" v-model:visible="visible" :closable="true">
+  <Dialog header="Join game" class="w-1/5" v-model:visible="visible" :closable="true" data-test="Join-Game-Dialog">
     <div class="flex flex-col" v-if="!isTryingToReconnect && !isGameFull">
       <div class="p-field flex flex-col">
         <label for="playerName">Name</label>
@@ -15,7 +15,7 @@
       </div>
 
       <Button
-        label="Join game"
+        label="Join"
         class="form-button"
         type="submit"
         :disabled="isJoiningGame"
@@ -29,6 +29,7 @@
         type="submit"
         :disabled="isJoiningGame"
         @click="joinGameClicked(gameKey)"
+        data-test="Dialog-Join-Game-Button"
       />
     </div>
     <div class="flex justify-center items-center" v-if="isGameFull">
@@ -68,7 +69,6 @@ export default defineComponent({
       }
       const games = props.gamesList.map((g) => ({ ...g }));
       const game = games.find((game) => game.key === props.gameKey);
-      console.log(game);
       return game.playerCount === 4;
     });
 

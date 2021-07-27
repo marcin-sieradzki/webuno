@@ -1,10 +1,21 @@
 <template>
   <main
-    class="h-2/3 w-1/2 border border-gray-600 bg-surface-0 rounded-2xl p-4 grid grid-cols-1 grid-rows-[auto,1fr,auto]"
+    class="
+      h-[66vh]
+      w-[50vw]
+      min-h-2/3 min-w-1/2
+      border border-gray-600
+      bg-surface-0
+      rounded-2xl
+      p-4
+      grid grid-cols-1 grid-rows-[auto,1fr,auto]
+    "
   >
     <div class="flex justify-between items-center pb-4">
       <h2 class="text-white">Choose a match from a list below to join.</h2>
-      <Button :disabled="loading" @click="toggleCreateGameDialog">Create a new game</Button>
+      <Button :disabled="loading" @click="toggleCreateGameDialog" data-test="Create-Game-Button"
+        >Create a new game</Button
+      >
     </div>
     <ul class="h-full w-full backdrop-filter border border-gray-600 overflow-auto rounded-2xl text-white">
       <template v-if="allGames.length">
@@ -27,7 +38,11 @@
       </div>
     </ul>
 
-    <Button :disabled="loading || !selectedGame" @click="toggleJoinGameDialog" class="join-game-button place-self-end"
+    <Button
+      :disabled="loading || !selectedGame"
+      @click="toggleJoinGameDialog"
+      class="join-game-button place-self-end"
+      data-test="Join-Game-Button"
       >Join</Button
     >
   </main>
