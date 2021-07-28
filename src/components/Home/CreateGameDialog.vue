@@ -10,7 +10,7 @@
             aria-describedby="playerName-help"
             class="p-invalid"
             v-model="playerName"
-            :disabled="loading"
+            :disabled="loading.startGame"
           />
           <small v-if="validationError['name']" id="playerName-help" class="p-error">Name is required.</small>
         </div>
@@ -22,7 +22,7 @@
             aria-describedby="gameName-help"
             class="p-invalid"
             v-model="gameName"
-            :disabled="loading"
+            :disabled="loading.startGame"
           />
           <small v-if="validationError['gameName']" id="gameName-help" class="p-error">Game name is required.</small>
         </div>
@@ -31,7 +31,7 @@
         label="Create game"
         class="form-button"
         type="submit"
-        :disabled="loading"
+        :disabled="loading.startGame"
         @click="createGameClicked(gameName, playerName)"
       />
     </div>
@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { useGameService } from '@/composables/useGameService';
+import { useGame } from '@/composables/useGame';
 import { useHubConnection } from '@/composables/useHubConnection';
 import { defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -55,7 +55,7 @@ export default defineComponent({
       gameName: false,
     });
     const router = useRouter();
-    const { startGame, loading } = useGameService();
+    const { startGame, loading } = useGame();
     const { connectToHub } = useHubConnection();
 
     const createGameClicked = async (gameNameInput: string, playerNameInput: string) => {

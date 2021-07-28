@@ -10,6 +10,7 @@ export const useCardService = () => {
 
   const playCard = async ({ gameKey, playerName, cardToPlay }: PlayCardParams) => {
     try {
+      error.value.playCard = null;
       loading.value = true;
       const playedCard = await connection.value.invoke('PlayCard', gameKey, playerName, cardToPlay);
       return playedCard;
@@ -22,6 +23,7 @@ export const useCardService = () => {
 
   const drawCard = async ({ playerName, game }: DrawCardParams) => {
     try {
+      error.value.drawCard = null;
       loading.value = true;
       const drawnCard = await connection.value.invoke('DrawRandomCard', playerName, game);
       return drawnCard;
@@ -52,6 +54,6 @@ interface DrawCardParams {
 }
 
 interface UseCardErrors {
-  playCard: Error;
-  drawCard: Error;
+  playCard: Error | null;
+  drawCard: Error | null;
 }

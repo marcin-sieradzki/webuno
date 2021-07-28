@@ -1,16 +1,17 @@
 import { GameDto } from './../Types';
 import { sharedRef } from '@/utils/shared/useSharedRef';
-import { ref, Ref } from 'vue';
+import { Ref } from 'vue';
 import axios from 'axios';
 
 const apiUrl = 'https://webuno-api.azurewebsites.net/api';
 export const useAllGames = () => {
   const loading: Ref<boolean> = sharedRef<boolean>('useAllGames-loading', false);
-  const error: Ref<Error> = sharedRef('useAllGames-error', null);
+  const error: Ref<Error | null> = sharedRef('useAllGames-error', null);
   const allGames: Ref<GameDto[]> = sharedRef('useAllGames-games', []);
 
   async function fetchAllGames() {
     try {
+      error.value = null;
       loading.value = true;
       const gamesData = await axios.get(`${apiUrl}/game`);
       allGames.value = gamesData.data;

@@ -9,59 +9,56 @@ import { sharedRef } from '@/utils/shared/useSharedRef';
 const { connection } = useHubConnection();
 
 const apiUrl = 'https://webuno-api.azurewebsites.net/api';
-// const apiUrl = 'https://webuno-api.azurewebsites.net/api';
 const $game = ref<Game | null>(null);
 
-export const useGameService = () => {
-  const loading: Ref<boolean> = sharedRef('useGame-loading', false);
-  const error: Ref<UseGameErrors> = sharedRef('useGame-error', { startGame: null, refreshGame: null });
+export const useGame = () => {
+  const loading: Ref<UseGameLoaders> = sharedRef('useGame-loading', {
+    startGame: false,
+    joinGame: false,
+    fetchGame: false,
+  });
+  const error: Ref<UseGameErrors> = sharedRef('useGame-error', { startGame: null, fetchGame: null, joinGame: null });
   const route = useRoute();
 
   const startGame = async (playerName: string, gameName: string): Promise<Game> => {
     try {
-      loading.value = true;
+      error.value.startGame = null;
+      loading.value.startGame = true;
       const newGame: Game = await connection.value.invoke('StartGame', playerName, gameName);
       return newGame;
     } catch (e) {
       error.value.startGame = e;
       throw new Error(e);
     } finally {
-      loading.value = false;
+      loading.value.startGame = false;
     }
   };
 
   const joinGame = async ({ gameKey, playerName }: JoinGameParams): Promise<Game> => {
     try {
-      loading.value = true;
+      error.value.joinGame = null;
+      loading.value.joinGame = true;
       const joinedGame: Game = await connection.value.invoke('JoinGame', gameKey, playerName);
       return joinedGame;
     } catch (e) {
       error.value = e;
       throw new Error(e);
     } finally {
-      loading.value = false;
+      loading.value.joinGame = false;
     }
   };
 
-  const refreshGame = async (game: Game): Promise<void | Error> => {
-    loading.value = true;
+  const fetchGame = async (game: Game): Promise<void | Error> => {
     try {
-      const fetchedGame = await fetchGame(game.key);
-      $game.value = fetchedGame;
+      error.value.fetchGame = null;
+      loading.value.fetchGame = true;
+      const fetchedGame: HubResponse<Game> = await axios.get(`${apiUrl}/game/${game.key}`);
+      $game.value = fetchedGame.data;
     } catch (e) {
       error.value.fetchGame = e;
       throw new Error(e);
     } finally {
-      loading.value = false;
-    }
-  };
-
-  const fetchGame = async (key: string): Promise<Game> => {
-    try {
-      const fetchedGame: HubResponse<Game> = await axios.get(`${apiUrl}/game/${key}`);
-      return fetchedGame.data;
-    } catch (e) {
-      throw new Error(e);
+      loading.value.fetchGame = false;
     }
   };
 
@@ -71,7 +68,7 @@ export const useGameService = () => {
 
   const winner = computed(() => {
     const winnerId = $game.value?.winnerId;
-    return winnerId ? $game.value.players.find((player) => player.key == winnerId) : null;
+    return winnerId ? $game.value.players.find((player: Player) => player.key == winnerId) : null;
   });
 
   const disconnectFromGame = async () => {
@@ -92,7 +89,7 @@ export const useGameService = () => {
       $game.value?.players?.find((player: Player) => player.name === localStorage.getItem(`${route.params.gameKey}`))
     ),
     players: computed(() =>
-      $game?.value?.players?.sort((currentPlayer, nextPlayer) => {
+      $game?.value?.players?.sort((currentPlayer: Player, nextPlayer: Player) => {
         return currentPlayer.sitIndex - nextPlayer.sitIndex;
       })
     ),
@@ -100,9 +97,8 @@ export const useGameService = () => {
     playedCards: computed(() => $game?.value?.cardsPlayed || []),
     game: computed(() => $game.value),
     disconnectFromGame,
-    refreshGame,
-    startGame,
     fetchGame,
+    startGame,
     joinGame,
     setGame,
     loading,
@@ -111,9 +107,16 @@ export const useGameService = () => {
   };
 };
 
+interface UseGameLoaders {
+  startGame: boolean;
+  joinGame: boolean;
+  fetchGame: boolean;
+}
+
 interface UseGameErrors {
-  startGame: Error;
-  fetchGame: Error;
+  startGame: Error | null;
+  joinGame: Error | null;
+  fetchGame: Error | null;
 }
 
 interface JoinGameParams {

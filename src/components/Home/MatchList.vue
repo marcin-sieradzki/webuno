@@ -17,26 +17,35 @@
         >Create a new game</Button
       >
     </div>
-    <ul class="h-full w-full backdrop-filter border border-gray-600 overflow-auto rounded-2xl text-white">
-      <template v-if="allGames.length">
-        <li
-          v-for="game in allGames"
-          :key="game.key"
-          class="w-full p-4 cursor-pointer flex justify-between"
-          :class="{
-            'bg-surface-700': selectedGame?.key == game.key,
-            'bg-surface-400 odd:bg-surface-300': selectedGame?.key != game.key,
-          }"
-          @click="selectGame(game)"
-        >
-          <span>{{ game.name }}</span>
-          <span>{{ game.playerCount }}/4</span>
-        </li>
-      </template>
-      <div v-if="loading" class="w-full h-full flex justify-center items-center">
-        <ProgressSpinner></ProgressSpinner>
-      </div>
+    <ul
+      v-if="allGames.length"
+      class="h-full w-full backdrop-filter border border-gray-600 overflow-auto rounded-2xl text-gray-300"
+    >
+      <li
+        v-for="game in allGames"
+        :key="game.key"
+        class="w-full p-4 cursor-pointer flex justify-between hover:bg-surface-900"
+        :class="{
+          'text-white': selectedGame?.key == game.key,
+          'bg-surface-700': selectedGame?.key == game.key,
+          'bg-surface-400 odd:bg-surface-300': selectedGame?.key != game.key,
+        }"
+        @click="selectGame(game)"
+      >
+        <span>{{ game.name }}</span>
+        <span>{{ game.playerCount }}/4</span>
+      </li>
     </ul>
+    <div class="text-gray-300">
+      <div v-if="loading" class="w-full h-full flex flex-col justify-center items-center">
+        <ProgressSpinner></ProgressSpinner>
+        <p class="text-sm">loading matches... this may take a minute 🤷‍♀️</p>
+      </div>
+      <div class="h-full flex flex-col justify-center items-center" v-if="error">
+        <p class="mb-4">Error occured while loading matches. 😒</p>
+        <Button :disabled="loading" @click="fetchAllGames">Try again</Button>
+      </div>
+    </div>
 
     <Button
       :disabled="loading || !selectedGame"
@@ -58,9 +67,10 @@
 <script lang="ts">
 import JoinGameDialog from './JoinGameDialog.vue';
 import CreateGameDialog from './CreateGameDialog.vue';
-import { defineComponent, onMounted, Ref, ref } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 import { useAllGames } from '@/composables/useAllGames';
-import { Game } from '@/Types';
+import { useMatchList } from '@/composables/useMatchList';
+
 export default defineComponent({
   name: 'MatchList',
   components: {
@@ -69,28 +79,22 @@ export default defineComponent({
   },
   setup() {
     const { fetchAllGames, allGames, loading, error } = useAllGames();
+    const {
+      toggleJoinGameDialog,
+      openCreateGameDialog,
+      isJoinGameDialogOpen,
+      isCreateGameDialogOpen,
+      toggleCreateGameDialog,
+      selectGame,
+      selectedGame,
+    } = useMatchList();
 
-    const selectedGame: Ref<Game> = ref(null);
-    const selectGame = (game: Game) => {
-      selectedGame.value = game;
-    };
-
-    const isJoinGameDialogOpen = ref(false);
-    const toggleJoinGameDialog = () => {
-      isJoinGameDialogOpen.value = !isJoinGameDialogOpen.value;
-    };
-
-    const isCreateGameDialogOpen = ref(false);
-    const toggleCreateGameDialog = () => {
-      isCreateGameDialogOpen.value = !isCreateGameDialogOpen.value;
-    };
-
-    const openCreateGameDialog = () => {};
     onMounted(async () => {
       await fetchAllGames();
     });
     return {
       allGames,
+      fetchAllGames,
       toggleJoinGameDialog,
       openCreateGameDialog,
       isJoinGameDialogOpen,
@@ -99,6 +103,7 @@ export default defineComponent({
       selectGame,
       selectedGame,
       loading,
+      error,
     };
   },
 });
@@ -106,8 +111,5 @@ export default defineComponent({
 <style lang="scss" scoped>
 .join-game-button {
   margin-top: 1rem;
-}
-.active {
-  @apply bg-green-500;
 }
 </style>

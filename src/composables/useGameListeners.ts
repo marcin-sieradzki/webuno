@@ -1,35 +1,35 @@
 import { CardPlayedResponse, Game, Player } from '@/Types';
-import { useGameService } from './useGameService';
+import { useGame } from './useGame';
 import { useHubConnection } from './useHubConnection';
 
-export function registerListeners(registerListener: Function, refreshGame: Function, game: Game) {
+export function registerListeners(registerListener: Function, fetchGame: Function, game: Game) {
   registerListener('PlayerJoined', async (player: Player) => {
     console.log('PlayerJoined', { player });
-    await refreshGame(game);
+    await fetchGame(game);
   });
 
   registerListener('PlayerReconnected', async (player: Player) => {
     console.log('PlayerReconnected', { player });
-    await refreshGame(game);
+    await fetchGame(game);
   });
 
   registerListener('CardPlayed', async (data: CardPlayedResponse) => {
     console.log('MessageReceived', { data });
-    await refreshGame(game);
+    await fetchGame(game);
   });
 
   registerListener('CardDrew', async (data: CardPlayedResponse) => {
     console.log('CardDrew', { data });
-    await refreshGame(game);
+    await fetchGame(game);
   });
 }
 
 export const useGameListeners = () => {
-  const { refreshGame, game } = useGameService();
+  const { fetchGame, game } = useGame();
   const { registerListener } = useHubConnection();
 
   function registerGameListeners() {
-    return registerListeners(registerListener, refreshGame, game.value);
+    return registerListeners(registerListener, fetchGame, game.value);
   }
 
   return {

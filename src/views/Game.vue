@@ -3,17 +3,20 @@
     <GameBoard />
     <GameWinnerDialog v-if="winner" :winner="winner" />
   </div>
+  <div v-if="isJoiningGame" class="loader h-screen max-h-full w-full flex flex-col items-center justify-center">
+    <ProgressSpinner></ProgressSpinner>
+    <span class="text-white">Joining game...</span>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onBeforeUnmount, computed, watch } from 'vue';
+import { defineComponent, onMounted, computed, watch } from 'vue';
 
 import GameBoard from '@/components/GameBoard.vue';
 import GameWinnerDialog from '@/components/Dialogs/GameWinnerDialog.vue';
 
 import { useHubConnection } from '@/composables/useHubConnection';
-import { useGameService } from '@/composables/useGameService';
-import { useJoinGame } from '@/composables/useJoinGame';
+import { useGame } from '@/composables/useGame';
 import { useRoute } from 'vue-router';
 import { useGameListeners } from '@/composables/useGameListeners';
 
@@ -22,15 +25,28 @@ export default defineComponent({
   components: { GameBoard, GameWinnerDialog },
   setup() {
     const route = useRoute();
-    const { player, setGame, game, players, winner } = useGameService();
-    const { joinGame, loading: isJoiningGame, error: joinGameError } = useJoinGame();
-    const { connectToHub, isConnected, loading, error } = useHubConnection();
+
+    const {
+      player,
+      setGame,
+      game,
+      players,
+      winner,
+      joinGame,
+      loading: isLoadingGame,
+      error: joinGameError,
+    } = useGame();
+    const { connectToHub, isConnected, loading: isLoadingConnection, error } = useHubConnection();
     const { registerGameListeners } = useGameListeners();
 
     watch(isConnected, async (value) => {
       if (!value) {
         await connectToHub();
       }
+    });
+
+    const isJoiningGame = computed(() => {
+      return isLoadingGame.value.joinGame || isLoadingConnection.value;
     });
 
     onMounted(async () => {
@@ -54,8 +70,8 @@ export default defineComponent({
       player,
       players,
       winner,
-      isJoiningGame,
       joinGameError,
+      isJoiningGame,
       showWinnerModal: computed(() => {
         return winner.value.key ? true : false;
       }),
@@ -67,6 +83,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .game {
   perspective: 80em;
+  background: radial-gradient(var(--blue-500), var(--surface-300));
+}
+.loader {
   background: radial-gradient(var(--blue-500), var(--surface-300));
 }
 </style>

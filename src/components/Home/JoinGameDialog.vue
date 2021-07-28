@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { useJoinGame } from '@/composables/useJoinGame';
+import { useGame } from '@/composables/useGame';
 import { useHubConnection } from '@/composables/useHubConnection';
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -56,7 +56,7 @@ export default defineComponent({
     const playerName = ref('');
     const validationError = ref(false);
     const router = useRouter();
-    const { joinGame, loading } = useJoinGame();
+    const { joinGame, loading } = useGame();
     const { connectToHub, loading: isConnectingToHub } = useHubConnection();
 
     const isTryingToReconnect = computed(() => {
@@ -67,13 +67,13 @@ export default defineComponent({
       if (isTryingToReconnect.value) {
         return false;
       }
-      const games = props.gamesList.map((g) => ({ ...g }));
-      const game = games.find((game) => game.key === props.gameKey);
+      const games = props.gamesList?.map((g) => ({ ...g }));
+      const game = games?.find((game) => game.key === props.gameKey);
       return game.playerCount === 4;
     });
 
     const isJoiningGame = computed(() => {
-      return loading.value || isConnectingToHub.value;
+      return loading.joinGame?.value || isConnectingToHub.value;
     });
 
     const joinGameClicked = async (gameKey: string, playerName?: string) => {
@@ -86,7 +86,7 @@ export default defineComponent({
           return;
         }
 
-        if (!playerName.length) {
+        if (!playerName?.length) {
           validationError.value = true;
           return;
         }
@@ -97,6 +97,7 @@ export default defineComponent({
         navigateToGame(gameKey);
       } catch (e) {}
     };
+
     const navigateToGame = (gameKey: string) => {
       router.push({
         name: 'Game',
