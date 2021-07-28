@@ -12,6 +12,8 @@
       rounded-full
       ring-2 ring-teal-300 ring-inset
       shadow-2xl
+      xl:min-w-[530px]
+      sm:min-w-[430px]
     "
   >
     <CardStack

@@ -1,7 +1,7 @@
 <template>
   <div
     data-test="Card"
-    class="card h-52 w-36 min-w-36 max-w-36 bg-gray-50 rounded-lg border-4 shadow-md"
+    class="card h-[22vmin] w-[16vmin] bg-gray-50 rounded-lg border-4 shadow-md"
     @click="cardClicked(card)"
     :class="[classObject, cardColor]"
     :style="styleObject"
@@ -14,7 +14,7 @@
       >
     </CardFace>
     <CardFace v-if="reversed" data-test="Card-Back">
-      <span class="transform rotate-negative-18 text-white font-bold text-xl">WEBUNO</span>
+      <span class="transform rotate-negative-18 text-white font-bold xl:text-xl md:text-base">WEBUNO</span>
     </CardFace>
   </div>
 </template>
