@@ -1,5 +1,6 @@
 <template>
   <div v-if="game && game.players.length" class="game h-screen max-h-full w-full overflow-hidden relative">
+    <h1 class="absolute top-4 left-0 right-0 ml-auto mr-auto text-center text-white text-xl">{{ game.name }}</h1>
     <GameBoard />
     <GameWinnerDialog v-if="winner" :winner="winner" />
   </div>

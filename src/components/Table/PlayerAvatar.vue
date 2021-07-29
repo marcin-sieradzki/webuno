@@ -1,5 +1,8 @@
 <template>
-  <Avatar :label="nameFirstLetter" size="large" class="text-white transform" :class="classObject" />
+  <div class="flex flex-col items-center transform" :class="classObject">
+    <Avatar :label="nameFirstLetter" size="large" class="text-white" :class="avatarClassObject" />
+    <span class="mt-2 text-white">{{ playerName }}</span>
+  </div>
 </template>
 
 <script>
@@ -23,14 +26,15 @@ export default defineComponent({
     const nameFirstLetter = computed(() => {
       return playerName?.value?.charAt(0).toUpperCase() || '';
     });
-
+    const avatarClassObject = computed(() => {
+      return { 'border border-4 border-yellow-400 animate-pulse ': active.value };
+    });
     const classObject = computed(() => {
       return {
         [rotate.value]: true,
-        'border border-4 border-yellow-400 animate-pulse ': active.value,
       };
     });
-    return { nameFirstLetter, classObject };
+    return { nameFirstLetter, classObject, avatarClassObject };
   },
 });
 </script>
