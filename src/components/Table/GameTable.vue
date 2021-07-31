@@ -21,9 +21,6 @@
       :disabled="disableCardActions"
       class="self-center"
     />
-    <div>
-      {{ latestAction }}
-    </div>
     <div class="relative h-full w-full flex items-center justify-center">
       <Card
         v-for="card in playedCards"
@@ -73,7 +70,6 @@ export default defineComponent({
       drawCard,
       disableCardActions,
       playedCards,
-      latestAction,
     };
   },
 });
