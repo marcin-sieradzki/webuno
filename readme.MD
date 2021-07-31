@@ -8,6 +8,10 @@ To join as multiple players on one machine please use incognito mode and open 4 
 
 ## [Live demo](https://nostalgic-mcnulty-07eb25.netlify.app)
 
+## An example screen of ongoing game
+
+![alt text](./src/assets/ongoing.png 'Picture of an ongoing game')
+
 # Local development
 
 To run the project locally:
