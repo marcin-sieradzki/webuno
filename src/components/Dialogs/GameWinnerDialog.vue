@@ -1,7 +1,14 @@
 <template>
-  <Dialog header="Game over" v-model:visible="visible" :closable="false">
-    <div class="p-3 pl-0">
-      <p class="pb-2">The winner is: {{ winner.name }}</p>
+  <Dialog v-model:visible="visible" :closable="false">
+    <template #header>
+      <div class="w-full">
+        <h2 class="text-center text-xl">Game Over</h2>
+      </div>
+    </template>
+    <div class="p-3 pl-0 w-80 flex flex-col justify-center items-center">
+      <p class="pb-2">
+        The winner is: <span class="text-green-500 font-bold text-xl">{{ winner.name }}</span>
+      </p>
       <router-link :to="{ name: 'Home' }"
         ><span class="text-blue-400 hover:underline hover:text-blue-600">Back to main page</span></router-link
       >

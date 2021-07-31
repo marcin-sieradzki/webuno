@@ -1,3 +1,4 @@
+import { Seat } from './Types';
 import { Ref } from 'vue';
 
 export interface Game {
@@ -24,6 +25,7 @@ export interface Player {
   playerCards: Card[];
   turnIndex: number;
   sitIndex: number;
+  positions: SeatPositions;
 }
 
 export interface Card {
@@ -64,4 +66,12 @@ export interface PromiseResponse {
   data: any;
   loading: Ref<boolean>;
   error: any;
+}
+
+export type Seat = 'left' | 'right' | 'bottom' | 'top';
+
+export interface SeatPositions {
+  avatarRotation: string;
+  cardsRotation: string;
+  seat: string;
 }

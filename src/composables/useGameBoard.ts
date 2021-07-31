@@ -10,7 +10,7 @@ export const useGameBoard = () => {
   const { player, currentTurn } = useGame();
   const { loading: isUsingCard } = useCardService();
 
-  const isPlayerTurn = computed(() => getIsPlayerTurn(currentTurn.value, player.value.name));
+  const isPlayerTurn = computed(() => getIsPlayerTurn(currentTurn.value, player.value?.name));
   const disableCardActions = computed(() => !isPlayerTurn.value || isUsingCard.value);
 
   return {

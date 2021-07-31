@@ -1,37 +1,39 @@
 <template>
   <Dialog header="Join game" class="w-1/5" v-model:visible="visible" :closable="true" data-test="Join-Game-Dialog">
-    <div class="flex flex-col" v-if="!isTryingToReconnect && !isGameFull">
-      <div class="p-field flex flex-col">
-        <label for="playerName">Name</label>
-        <InputText
-          id="playerName"
-          type="text"
-          aria-describedby="playerName-help"
-          class="p-invalid"
-          v-model="playerName"
-          :disabled="isJoiningGame"
-        />
-        <small v-if="validationError" id="playerName-help" class="p-error">Name is required.</small>
-      </div>
+    <form @submit.prevent>
+      <div class="flex flex-col" v-if="!isTryingToReconnect && !isGameFull">
+        <div class="p-field flex flex-col">
+          <label for="playerName">Name</label>
+          <InputText
+            id="playerName"
+            type="text"
+            aria-describedby="playerName-help"
+            class="p-invalid"
+            v-model="playerName"
+            :disabled="isJoiningGame"
+          />
+          <small v-if="validationError" id="playerName-help" class="p-error">Name is required.</small>
+        </div>
 
-      <Button
-        label="Join"
-        class="form-button"
-        type="submit"
-        :disabled="isJoiningGame"
-        @click="joinGameClicked(gameKey, playerName)"
-      />
-    </div>
-    <div class="flex justify-center items-center" v-if="isTryingToReconnect && !isGameFull">
-      <Button
-        label="Reconnect"
-        class="form-button"
-        type="submit"
-        :disabled="isJoiningGame"
-        @click="joinGameClicked(gameKey)"
-        data-test="Dialog-Join-Game-Button"
-      />
-    </div>
+        <Button
+          label="Join"
+          class="form-button"
+          type="submit"
+          :disabled="isJoiningGame"
+          @click="joinGameClicked(gameKey, playerName)"
+        />
+      </div>
+      <div class="flex justify-center items-center" v-if="isTryingToReconnect && !isGameFull">
+        <Button
+          label="Reconnect"
+          class="form-button"
+          type="submit"
+          :disabled="isJoiningGame"
+          @click="joinGameClicked(gameKey)"
+          data-test="Dialog-Join-Game-Button"
+        />
+      </div>
+    </form>
     <div class="flex justify-center items-center" v-if="isGameFull">
       <span>Game is full.</span>
     </div>
@@ -60,7 +62,8 @@ export default defineComponent({
     const { connectToHub, loading: isConnectingToHub } = useHubConnection();
 
     const isTryingToReconnect = computed(() => {
-      return localStorage.getItem(`${props.gameKey}`)?.length ? true : false;
+      return false;
+      // return localStorage.getItem(`${props.gameKey}`)?.length ? true : false;
     });
 
     const isGameFull = computed(() => {

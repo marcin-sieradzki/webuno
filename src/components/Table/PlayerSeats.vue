@@ -3,14 +3,15 @@
     v-for="player in players"
     :key="player.key"
     class="flex relative"
-    :class="calculatePositions(player, gamePlayer).cardsRotation"
+    :data-seat="'seat' + player.key + '.' + player.positions.seat"
+    :class="player.positions.cardsRotation"
   >
     <div v-if="player.playerCards" class="relative">
       <PlayerAvatar
         class="absolute right-0"
         :playerName="player.name"
         :active="currentTurn === player.name"
-        :rotate="calculatePositions(player, gamePlayer).avatarRotation"
+        :rotate="player.positions.avatarRotation"
       />
       <template v-for="card in player.playerCards" :key="card.key">
         <Card

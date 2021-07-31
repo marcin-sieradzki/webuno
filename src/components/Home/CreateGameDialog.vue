@@ -1,19 +1,7 @@
 <template>
   <Dialog header="Create game" class="w-1/5" v-model:visible="visible" :closable="true" data-test="Create-Game-Dialog">
-    <div class="flex flex-col">
+    <form class="flex flex-col" @submit.prevent>
       <div class="flex flex-col gap-4">
-        <div class="p-field flex flex-col">
-          <label for="playerName">Name</label>
-          <InputText
-            id="playerName"
-            type="text"
-            aria-describedby="playerName-help"
-            class="p-invalid"
-            v-model="playerName"
-            :disabled="loading.startGame"
-          />
-          <small v-if="validationError['name']" id="playerName-help" class="p-error">Name is required.</small>
-        </div>
         <div class="p-field flex flex-col">
           <label for="gameName">Game name</label>
           <InputText
@@ -26,6 +14,18 @@
           />
           <small v-if="validationError['gameName']" id="gameName-help" class="p-error">Game name is required.</small>
         </div>
+        <div class="p-field flex flex-col">
+          <label for="playerName">Username</label>
+          <InputText
+            id="playerName"
+            type="text"
+            aria-describedby="playerName-help"
+            class="p-invalid"
+            v-model="playerName"
+            :disabled="loading.startGame"
+          />
+          <small v-if="validationError['name']" id="playerName-help" class="p-error">Name is required.</small>
+        </div>
       </div>
       <Button
         label="Create game"
@@ -34,7 +34,7 @@
         :disabled="loading.startGame"
         @click="createGameClicked(gameName, playerName)"
       />
-    </div>
+    </form>
   </Dialog>
 </template>
 

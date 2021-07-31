@@ -1,3 +1,4 @@
+import { usePlayerSeats } from './usePlayerSeats';
 import { HubResponse } from '../Types';
 import { useHubConnection } from './useHubConnection';
 import { ref, computed, Ref } from 'vue';
@@ -5,7 +6,7 @@ import { Game, Player } from '@/Types';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import { sharedRef } from '@/utils/shared/useSharedRef';
-
+import { calculatePositions } from '@/composables/usePlayerSeats';
 const { connection } = useHubConnection();
 
 const apiUrl = 'https://webuno-api.azurewebsites.net/api';
@@ -19,6 +20,21 @@ export const useGame = () => {
   });
   const error: Ref<UseGameErrors> = sharedRef('useGame-error', { startGame: null, fetchGame: null, joinGame: null });
   const route = useRoute();
+
+  const player = computed(() =>
+    $game.value?.players?.find((player: Player) => player.name === localStorage.getItem(`${route.params.gameKey}`))
+  );
+
+  const players = computed(() =>
+    $game?.value?.players
+      ?.sort((currentPlayer: Player, nextPlayer: Player) => {
+        return currentPlayer.sitIndex - nextPlayer.sitIndex;
+      })
+      .map((p: Player) => {
+        const positions = calculatePositions(p, player.value);
+        return { ...p, positions: positions };
+      })
+  );
 
   const startGame = async (playerName: string, gameName: string): Promise<Game> => {
     try {
@@ -48,12 +64,12 @@ export const useGame = () => {
     }
   };
 
-  const fetchGame = async (game: Game): Promise<void | Error> => {
+  const fetchGame = async (game: Game): Promise<Game> => {
     try {
       error.value.fetchGame = null;
       loading.value.fetchGame = true;
       const fetchedGame: HubResponse<Game> = await axios.get(`${apiUrl}/game/${game.key}`);
-      $game.value = fetchedGame.data;
+      return fetchedGame.data;
     } catch (e) {
       error.value.fetchGame = e;
       throw new Error(e);
@@ -85,14 +101,8 @@ export const useGame = () => {
   };
 
   return {
-    player: computed(() =>
-      $game.value?.players?.find((player: Player) => player.name === localStorage.getItem(`${route.params.gameKey}`))
-    ),
-    players: computed(() =>
-      $game?.value?.players?.sort((currentPlayer: Player, nextPlayer: Player) => {
-        return currentPlayer.sitIndex - nextPlayer.sitIndex;
-      })
-    ),
+    player,
+    players,
     currentTurn: computed(() => $game?.value?.currentPlayerTurn),
     playedCards: computed(() => $game?.value?.cardsPlayed || []),
     game: computed(() => $game.value),

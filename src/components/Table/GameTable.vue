@@ -29,13 +29,14 @@
         randomlyRotated
         absolute
         :allowInteraction="false"
+        class="played-card"
       ></Card>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, Ref, ref } from 'vue';
 import { useGame } from '@/composables/useGame';
 import { useGameBoard } from '@/composables/useGameBoard';
 import { useCardService } from '@/composables/useCardService';
@@ -48,16 +49,19 @@ export default defineComponent({
   name: 'GameTable',
   components: { Card, CardStack, PlayerAvatar },
   setup() {
-    const { game, player } = useGame();
-    const { drawCard } = useCardService();
-    const { disableCardActions } = useGameBoard();
-
-    return {
-      game,
-      player,
-      drawCard,
-      disableCardActions,
-    };
+    try {
+      const { game, player } = useGame();
+      const { drawCard } = useCardService();
+      const { disableCardActions } = useGameBoard();
+      return {
+        game,
+        player,
+        drawCard,
+        disableCardActions,
+      };
+    } catch (e) {
+      console.log(e);
+    }
   },
 });
 </script>

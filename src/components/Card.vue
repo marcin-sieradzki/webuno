@@ -1,6 +1,7 @@
 <template>
   <div
     data-test="Card"
+    :played-by="card && card.playedBy ? card.playedBy : ''"
     class="card h-[22vmin] w-[16vmin] bg-gray-50 rounded-lg border-4 shadow-md"
     @click="cardClicked(card)"
     :class="[classObject, cardColor]"
