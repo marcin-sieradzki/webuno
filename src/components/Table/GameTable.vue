@@ -21,6 +21,9 @@
       :disabled="disableCardActions"
       class="self-center"
     />
+    <div>
+      {{ latestAction }}
+    </div>
     <div class="relative h-full w-full flex items-center justify-center">
       <Card
         v-for="card in playedCards"
@@ -36,12 +39,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, watch } from 'vue';
+import { defineComponent, Ref, watch, nextTick } from 'vue';
 import { useGame } from '@/composables/useGame';
 import { useGameBoard } from '@/composables/useGameBoard';
 import { useCardService } from '@/composables/useCardService';
 import { useAnimateCard } from '@/composables/useAnimateCard';
-import { nextTick } from 'vue';
+import { sharedRef } from '@/utils/shared/useSharedRef';
+import { ActionTypes } from '@/utils/enums/actionTypes';
+
 import Card from '@/components/Card.vue';
 import CardStack from '@/components/Table/CardStack.vue';
 import PlayerAvatar from '@/components/Table/PlayerAvatar.vue';
@@ -54,8 +59,10 @@ export default defineComponent({
     const { drawCard } = useCardService();
     const { disableCardActions } = useGameBoard();
     const { animatePlayedCard } = useAnimateCard();
+    const latestAction: Ref<string> = sharedRef<string>('latestAction');
 
     watch(playedCards, async (cards) => {
+      if (latestAction.value !== ActionTypes.CardPlayed) return;
       await nextTick();
       animatePlayedCard(cards[cards.length - 1]);
     });
@@ -66,6 +73,7 @@ export default defineComponent({
       drawCard,
       disableCardActions,
       playedCards,
+      latestAction,
     };
   },
 });
