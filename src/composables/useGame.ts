@@ -1,12 +1,12 @@
-import { usePlayerSeats } from './usePlayerSeats';
 import { HubResponse } from '../Types';
 import { useHubConnection } from './useHubConnection';
 import { ref, computed, Ref } from 'vue';
 import { Game, Player } from '@/Types';
-import axios from 'axios';
 import { useRoute } from 'vue-router';
 import { sharedRef } from '@/utils/shared/useSharedRef';
 import { calculatePositions } from '@/composables/usePlayerSeats';
+import axios from 'axios';
+
 const { connection } = useHubConnection();
 
 const apiUrl = 'https://webuno-api.azurewebsites.net/api';
@@ -87,33 +87,19 @@ export const useGame = () => {
     return winnerId ? $game.value.players.find((player: Player) => player.key == winnerId) : null;
   });
 
-  const disconnectFromGame = async () => {
-    // try {
-    //   await connection.value.invoke(
-    //     'DisconnectFromGame',
-    //     game.value.key,
-    //     player.value.name
-    //   );
-    //   return true;
-    // } catch (e) {
-    //   throw new Error(e);
-    // }
-  };
-
   return {
-    player,
-    players,
+    game: computed(() => $game.value),
     currentTurn: computed(() => $game?.value?.currentPlayerTurn),
     playedCards: computed(() => $game?.value?.cardsPlayed || []),
-    game: computed(() => $game.value),
-    disconnectFromGame,
+    winner: computed(() => winner.value),
+    player,
+    players,
     fetchGame,
     startGame,
     joinGame,
     setGame,
     loading,
     error,
-    winner: computed(() => winner.value),
   };
 };
 

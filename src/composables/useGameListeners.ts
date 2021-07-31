@@ -1,14 +1,8 @@
 import { CardPlayedResponse, Game, Player } from '@/Types';
 import { useGame } from './useGame';
 import { useHubConnection } from './useHubConnection';
-import { useAnimateCard } from './useAnimateCard';
-export function registerListeners(
-  registerListener: Function,
-  fetchGame: Function,
-  setGame: Function,
-  game: Game,
-  cardPlayedAnimationFunc: Function
-) {
+
+export function registerListeners(registerListener: Function, fetchGame: Function, setGame: Function, game: Game) {
   registerListener('PlayerJoined', async (player: Player) => {
     console.log('PlayerJoined', { player });
     const refreshedGame = await fetchGame(game);
@@ -23,9 +17,13 @@ export function registerListeners(
 
   registerListener('CardPlayed', async (data: CardPlayedResponse) => {
     console.log('MessageReceived', { data });
-    const refreshedGame = await fetchGame(game);
-    // cardPlayedAnimationFunc();
+    const refreshedGame: Game = await fetchGame(game);
     setGame(refreshedGame);
+    // setTimeout(() => {
+    //   const playedCard = refreshedGame.cardsPlayed.find((c) => c.key === data.card.key);
+    //   const event = new CustomEvent('CardPlayed', { detail: playedCard });
+    //   window.dispatchEvent(event);
+    // }, 10);
   });
 
   registerListener('CardDrew', async (data: CardPlayedResponse) => {
@@ -42,9 +40,9 @@ export function registerListeners(
 export const useGameListeners = () => {
   const { fetchGame, game, setGame } = useGame();
   const { registerListener } = useHubConnection();
-  const { animateLatestPlayedCard } = useAnimateCard();
+
   function registerGameListeners() {
-    return registerListeners(registerListener, fetchGame, setGame, game.value, animateLatestPlayedCard);
+    return registerListeners(registerListener, fetchGame, setGame, game.value);
   }
 
   return {

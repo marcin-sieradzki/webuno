@@ -51,18 +51,25 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      console.log('onMounted');
       if (!game.value?.key?.length) {
         if (!isConnected.value) {
           await connectToHub();
         }
-        console.log(localStorage.getItem(`${route.params.gameKey}`));
+
         const joinedGame = await joinGame({
           gameKey: route.params.gameKey.toString(),
           playerName: localStorage.getItem(`${route.params.gameKey}`),
         });
-        console.log({ joinedGame });
+
         setGame(joinedGame);
+        // window.addEventListener(
+        //   'CardPlayed',
+        //   function (e) {
+        //     console.log(e);
+        //     animatePlayedCard(e.detail);
+        //   },
+        //   false
+        // );
       }
       registerGameListeners();
     });

@@ -30,6 +30,7 @@ export interface Player {
 
 export interface Card {
   key: string;
+  id: string;
   symbol: string;
   color: string;
   playedBy: string;

@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="game && game.cardsPlayed"
+    v-if="game && playedCards"
     class="
       middle-table
       col-start-2
@@ -23,7 +23,7 @@
     />
     <div class="relative h-full w-full flex items-center justify-center">
       <Card
-        v-for="card in game.cardsPlayed"
+        v-for="card in playedCards"
         :key="card.key"
         :card="card"
         randomlyRotated
@@ -36,11 +36,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from 'vue';
+import { defineComponent, Ref, ref, watch } from 'vue';
 import { useGame } from '@/composables/useGame';
 import { useGameBoard } from '@/composables/useGameBoard';
 import { useCardService } from '@/composables/useCardService';
-
+import { useAnimateCard } from '@/composables/useAnimateCard';
+import { nextTick } from 'vue';
 import Card from '@/components/Card.vue';
 import CardStack from '@/components/Table/CardStack.vue';
 import PlayerAvatar from '@/components/Table/PlayerAvatar.vue';
@@ -49,19 +50,23 @@ export default defineComponent({
   name: 'GameTable',
   components: { Card, CardStack, PlayerAvatar },
   setup() {
-    try {
-      const { game, player } = useGame();
-      const { drawCard } = useCardService();
-      const { disableCardActions } = useGameBoard();
-      return {
-        game,
-        player,
-        drawCard,
-        disableCardActions,
-      };
-    } catch (e) {
-      console.log(e);
-    }
+    const { game, player, playedCards } = useGame();
+    const { drawCard } = useCardService();
+    const { disableCardActions } = useGameBoard();
+    const { animatePlayedCard } = useAnimateCard();
+
+    watch(playedCards, async (cards) => {
+      await nextTick();
+      animatePlayedCard(cards[cards.length - 1]);
+    });
+
+    return {
+      game,
+      player,
+      drawCard,
+      disableCardActions,
+      playedCards,
+    };
   },
 });
 </script>

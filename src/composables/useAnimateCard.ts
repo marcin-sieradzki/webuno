@@ -1,11 +1,14 @@
 import { gsap } from 'gsap';
+import { Card } from 'src/Types';
 
 export const useAnimateCard = () => {
-  const animateLatestPlayedCard = () => {
-    const playedCards = document.querySelectorAll('.played-card');
-    const latestCard = playedCards[playedCards.length - 1];
+  const animatePlayedCard = (card: Card) => {
+    if (!card) {
+      return;
+    }
 
-    const playedBy = latestCard.getAttribute('played-by');
+    const playedCard = document.querySelector(`#card${card.id}`);
+    const playedBy = playedCard?.getAttribute('played-by');
     if (!playedBy) {
       return;
     }
@@ -40,11 +43,11 @@ export const useAnimateCard = () => {
     }
 
     const tl = gsap.timeline();
-    tl.from(latestCard, { ...from, duration: 0.5, rotate: 180 });
-    tl.to(latestCard, { scale: 1.3, duration: 0.2 }, '-=0.35');
-    tl.to(latestCard, { scale: 1, duration: 0.2, ease: 'power4' });
+    tl.from(playedCard, { ...from, duration: 0.5, rotate: 180 });
+    tl.to(playedCard, { scale: 1.3, duration: 0.2 }, '-=0.35');
+    tl.to(playedCard, { scale: 1, duration: 0.2, ease: 'power4' });
   };
   return {
-    animateLatestPlayedCard,
+    animatePlayedCard,
   };
 };
