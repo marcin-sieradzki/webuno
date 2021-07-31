@@ -62,8 +62,8 @@ export default defineComponent({
     const { connectToHub, loading: isConnectingToHub } = useHubConnection();
 
     const isTryingToReconnect = computed(() => {
-      return false;
-      // return localStorage.getItem(`${props.gameKey}`)?.length ? true : false;
+      // return false;
+      return localStorage.getItem(`${props.gameKey}`)?.length ? true : false;
     });
 
     const isGameFull = computed(() => {
@@ -76,7 +76,7 @@ export default defineComponent({
     });
 
     const isJoiningGame = computed(() => {
-      return loading.joinGame?.value || isConnectingToHub.value;
+      return loading.value.joinGame || isConnectingToHub.value;
     });
 
     const joinGameClicked = async (gameKey: string, playerName?: string) => {
