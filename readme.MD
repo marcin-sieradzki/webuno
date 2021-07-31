@@ -10,7 +10,7 @@ To join as multiple players on one machine please use incognito mode and open 4 
 
 ## An example screen of ongoing game
 
-![alt text](./src/assets/ongoing.png 'Picture of an ongoing game')
+![Picture of an ongoing game](./dist/assets/ongoing.png 'Picture of an ongoing game')
 
 # Local development
 
